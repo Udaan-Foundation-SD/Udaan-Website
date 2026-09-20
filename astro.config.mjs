@@ -5,4 +5,6 @@ import { defineConfig } from 'astro/config';
 // (e.g. 'https://yourorg.org') so canonical URLs and sitemaps are correct.
 export default defineConfig({
   // site: 'https://yourorg.org',
+  // Use the port the harness assigns (PORT env), falling back to Astro's default.
+  server: { port: process.env.PORT ? Number(process.env.PORT) : 4321 },
 });

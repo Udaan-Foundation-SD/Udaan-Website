@@ -25,6 +25,7 @@
   /* --- Typography --- */
   --font-display: 'Fraunces Variable', 'Fraunces', Georgia, 'Times New Roman', serif;
   --font-body: 'Plus Jakarta Sans Variable', 'Plus Jakarta Sans', system-ui, -apple-system, Segoe UI, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, 'SFMono-Regular', 'Cascadia Code', Consolas, monospace;
 
   /* Fluid type scale — smaller, tighter body; large but controlled display.
      Grows smoothly between mobile and desktop. */
@@ -121,12 +122,15 @@ a { color: inherit; text-decoration-color: color-mix(in srgb, var(--color-accent
 /* Small uppercase label above headings */
 .eyebrow {
   display: inline-block;
+  font-family: var(--font-mono);
   font-size: var(--step--1);
-  font-weight: 600;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+  text-transform: lowercase;
   color: var(--color-warm);
 }
+/* Leading marker gives the label a deliberate, editorial feel. */
+.eyebrow::before { content: "// "; opacity: 0.65; }
 
 .lead { font-size: var(--step-1); color: var(--color-ink-soft); line-height: 1.5; }
 .muted { color: var(--color-ink-soft); }

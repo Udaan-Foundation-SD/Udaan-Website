@@ -38,7 +38,16 @@ const pins = locations.map((l, i) => {
     <div class="map-head reveal">
       <span class="eyebrow">Where we work</span>
       <h2>On the ground in India.</h2>
-      <p class="lead">Click a pin to see what we're doing there.</p>
+      <p class="map-blurb">
+        We don't parachute in. We work through grassroots organizations already
+        rooted in their communities — local teams who know what's needed and are
+        trusted to deliver it. As these partnerships take shape, this map fills in
+        with the places our support reaches.
+      </p>
+      <p class="map-cue">
+        <span class="map-cue-dot" aria-hidden="true"></span>
+        Click a pin to see what we're doing there.
+      </p>
     </div>
 
     <div class="map-layout reveal">
@@ -60,6 +69,7 @@ const pins = locations.map((l, i) => {
             {pins.map((p) => (
               <g
                 class:list={['pin', { 'is-selected': p.i === 0 }]}
+                transform={`translate(${p.x} ${p.y})`}
                 data-index={p.i}
                 data-name={p.name}
                 data-blurb={p.blurb}
@@ -67,9 +77,19 @@ const pins = locations.map((l, i) => {
                 data-image={p.image}
                 aria-label={p.name}
               >
-                <circle cx={p.x} cy={p.y} r="20" class="pin-hit" />
-                <circle cx={p.x} cy={p.y} r="16" class="pin-ring" />
-                <circle cx={p.x} cy={p.y} r="12" class="pin-dot" />
+                <!-- Radar pulses ripple out from the pin's tip (local 0,0). -->
+                <circle class="pin-pulse" r="10" />
+                <circle class="pin-pulse pin-pulse--delay" r="10" />
+                <!-- Generous invisible hit/tap target over the whole pin. -->
+                <circle class="pin-hit" cx="0" cy="-22" r="32" />
+                <g class="pin-inner">
+                  <circle class="pin-ring" cx="0" cy="-30" r="17" />
+                  <path
+                    class="pin-body"
+                    d="M0 0 C -6 -13 -12 -17 -12 -30 A 12 12 0 1 1 12 -30 C 12 -17 6 -13 0 0 Z"
+                  />
+                  <circle class="pin-hole" cx="0" cy="-30" r="4.6" />
+                </g>
               </g>
             ))}
           </svg>
@@ -106,8 +126,31 @@ const pins = locations.map((l, i) => {
 </section>
 
 <style>
-  .map-head { text-align: center; max-width: 52ch; margin: 0 auto var(--space-md); }
-  .map-head .lead { margin-top: var(--space-sm); }
+  .map-head { text-align: center; max-width: 56ch; margin: 0 auto var(--space-md); }
+  /* Smaller than a lead — this is a blurb now. */
+  .map-blurb {
+    margin-top: var(--space-sm);
+    font-size: var(--step-0); line-height: 1.6; color: var(--color-ink-soft);
+  }
+  /* Emphasized call-to-action, with a pulsing dot echoing the map pins. */
+  .map-cue {
+    margin-top: var(--space-md);
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    font-family: var(--font-mono); font-weight: 400;
+    font-size: var(--step--1); letter-spacing: -0.01em; color: var(--color-ink);
+  }
+  .map-cue-dot {
+    width: 8px; height: 8px; border-radius: 50%; background: #fff;
+    animation: map-cue-pulse 2.2s ease-out infinite;
+  }
+  @keyframes map-cue-pulse {
+    0%   { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0.55); }
+    70%  { box-shadow: 0 0 0 11px rgba(255, 255, 255, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(255, 255, 255, 0); }
+  }
+  @media (prefers-reduced-motion: reduce) { .map-cue-dot { animation: none; } }
+  /* The cue only makes sense with JS (the list is shown instead otherwise). */
+  :global(html:not(.js)) .map-cue { display: none; }
 
   .map-layout {
     display: grid;
@@ -148,40 +191,63 @@ const pins = locations.map((l, i) => {
   .map-chip.is-active { background: var(--color-warm); border-color: var(--color-warm); color: #fff; }
   .map-chip.is-active .map-chip-dot { background: #fff; }
 
-  /* Pastel state fills (index from the data) + crisp border mesh on top. */
-  .state.c0 { fill: #c3d7ef; }  /* soft blue */
-  .state.c1 { fill: #f3cfb0; }  /* soft peach */
-  .state.c2 { fill: #cbe2bd; }  /* soft green */
-  .state.c3 { fill: #dccff0; }  /* soft violet */
-  .state.c4 { fill: #bce0dc; }  /* soft teal */
-  .state.c5 { fill: #eeddb8; }  /* soft sand */
+  /* Muted green state fills (index from the data). Lightness is interleaved so
+     any two adjacent states — always different indices — clearly contrast. */
+  .state.c0 { fill: #203027; }  /* deep green */
+  .state.c1 { fill: #33493b; }  /* light sage */
+  .state.c2 { fill: #263a2e; }  /* mid-deep */
+  .state.c3 { fill: #3d5745; }  /* lightest */
+  .state.c4 { fill: #2c4234; }  /* medium */
+  .state.c5 { fill: #47624c; }  /* light moss */
+  .state { transition: fill 0.2s ease; }
   .state-borders {
-    fill: none; stroke: rgba(20, 24, 31, 0.45); stroke-width: 1.2;
+    fill: none; stroke: rgba(178, 199, 184, 0.28); stroke-width: 1.1;
     stroke-linejoin: round; stroke-linecap: round;
   }
 
-  /* Pins — shrink slightly on hover (transform about their own centre) */
-  .pin {
-    cursor: pointer;
-    transform-box: fill-box;
-    transform-origin: center;
-    transition: transform 0.15s ease;
-  }
-  .pin:hover { transform: scale(0.85); }
+  /* Pins — tiny warm teardrops with a punched hole; grow from the tip on hover. */
+  .pin { cursor: pointer; }
   .pin-hit { fill: transparent; }               /* generous click/tap target */
-  .pin-dot {
-    fill: var(--color-warm); stroke: #fff; stroke-width: 2.5;
-    paint-order: stroke;                 /* white halo so pins pop on any pastel */
+
+  .pin-inner {
+    transform-box: fill-box; transform-origin: bottom center; /* the tip */
+    transition: transform 0.18s ease;
+  }
+  .pin:hover .pin-inner { transform: scale(1.14); }
+
+  .pin-body {
+    fill: var(--color-warm);
+    stroke: rgba(10, 14, 12, 0.35); stroke-width: 1;
     transition: fill 0.15s ease;
   }
+  .pin:hover .pin-body { fill: var(--color-warm-hover); }
+  .pin-hole { fill: var(--color-bg); }          /* dark donut hole */
+
   .pin-ring {
-    fill: none; stroke: var(--color-ink); stroke-width: 3;
+    fill: none; stroke: var(--color-warm); stroke-width: 2.5;
     opacity: 0; transition: opacity 0.15s ease;
   }
-  .pin:hover .pin-dot { fill: var(--color-warm-hover); }
   .pin.is-selected .pin-ring { opacity: 1; }
   .pin:focus-visible { outline: none; }
   .pin:focus-visible .pin-ring { opacity: 1; stroke: var(--color-accent); }
+
+  /* Radar: rings expand and fade out from the tip, endlessly. */
+  .pin-pulse {
+    fill: var(--color-warm);
+    transform-box: fill-box; transform-origin: center;
+    opacity: 0; pointer-events: none;
+    animation: pin-radar 2.6s cubic-bezier(0.2, 0.6, 0.3, 1) infinite;
+  }
+  .pin-pulse--delay { animation-delay: 1.3s; }
+  @keyframes pin-radar {
+    0%   { transform: scale(0.35); opacity: 0.5; }
+    70%  { opacity: 0; }
+    100% { transform: scale(3.4); opacity: 0; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .pin-pulse { animation: none; opacity: 0; }
+    .pin-inner { transition: none; }
+  }
 
   /* Panel — a single photo card with the text overlaid at the bottom. */
   .map-panel {
