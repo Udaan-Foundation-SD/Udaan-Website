@@ -1,0 +1,19 @@
+@import "@fontsource-variable/eb-garamond/wght.css";
+@import "@fontsource-variable/manrope/wght.css";
+@import "tailwindcss";
+
+@theme {
+	/* Headlines and body copy */
+	--font-serif: "EB Garamond Variable", Garamond, Georgia, serif;
+	/* Buttons, nav, small labels */
+	--font-ui: "Manrope Variable", ui-sans-serif, system-ui, sans-serif;
+	--font-sans: var(--font-ui);
+
+	/* Warm near-black for text on white */
+	--color-ink: #1a1814;
+	/* Darkest green of the banyan canopy — photo panel fallback while the image loads */
+	--color-canopy: #1b2316;
+	/* Lush leaf green for primary buttons — white text on it passes WCAG AA (5.3:1) */
+	--color-leaf: #2d7a3e;
+	--color-leaf-deep: #246332;
+}

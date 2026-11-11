@@ -1,0 +1,14 @@
+---
+interface Props {
+	class?: string;
+}
+
+const { class: className } = Astro.props;
+---
+
+<!-- A bird rising in flight — "udaan" means flight -->
+<svg viewBox="0 0 64 50" fill="currentColor" aria-hidden="true" class={className}>
+	<path
+		d="M60 18C58 15.5 55 13.5 52 14C49 14.5 47 17 44 21.5C39 13 31 5.5 21 2C25.5 9.5 28 18 29.5 27C24 30.5 18 33.5 12 35.5L2 33.5L8.5 40L3.5 47L14 41.5C28 41 41 35 50 26.5C54 23.5 57 20.5 60 18Z"
+	></path>
+</svg>

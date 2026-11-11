@@ -1,0 +1,40 @@
+---
+interface Props {
+	href: string;
+	variant?: 'primary' | 'secondary';
+	arrow?: boolean;
+	class?: string;
+}
+
+const { href, variant = 'primary', arrow = false, class: className } = Astro.props;
+
+const variants = {
+	primary: 'bg-leaf text-white hover:bg-leaf-deep',
+	secondary: 'bg-stone-100 text-ink hover:bg-stone-200',
+};
+---
+
+<a
+	href={href}
+	class:list={[
+		'group font-ui inline-flex items-center justify-center gap-2 rounded-md px-6 py-1.5 text-[13.5px] leading-5 font-semibold whitespace-nowrap transition-colors',
+		variants[variant],
+		className,
+	]}
+>
+	<slot />
+	{
+		arrow && (
+			<svg
+				viewBox="0 0 16 16"
+				class="size-3 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
+				fill="none"
+				stroke="currentColor"
+				stroke-width="1.75"
+				aria-hidden="true"
+			>
+				<path d="M4.5 11.5 11.5 4.5M5.5 4.5h6v6" stroke-linecap="round" stroke-linejoin="round" />
+			</svg>
+		)
+	}
+</a>
