@@ -1,0 +1,87 @@
+---
+import BirdLogo from './BirdLogo.astro';
+import Button from './Button.astro';
+import { APPLY_URL, CONTACT_EMAIL, DONATE_URL, LEGAL_NOTE, SOCIALS } from '../data/site';
+
+const explore = [
+	{ label: 'How it works', href: '#how-it-works' },
+	{ label: 'Our partners', href: '#gurukulam' },
+	{ label: 'Who we are', href: '#who-we-are' },
+];
+
+const involved = [
+	{ label: 'Donate', href: DONATE_URL },
+	{ label: 'Apply for funding', href: APPLY_URL },
+	...(CONTACT_EMAIL ? [{ label: CONTACT_EMAIL, href: `mailto:${CONTACT_EMAIL}` }] : []),
+];
+
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-stone-200 bg-stone-50 px-6 pt-16 pb-10 lg:px-12">
+	<div class="mx-auto max-w-6xl">
+		<div class="grid gap-12 md:grid-cols-12">
+			<div class="md:col-span-5">
+				<a href="/" class="text-ink inline-flex items-center gap-2" aria-label="Udaan Foundation home">
+					<BirdLogo class="h-6 w-auto" />
+					<span class="font-ui text-xl font-bold tracking-tight">Udaan</span>
+				</a>
+				<p class="mt-2 text-sm text-stone-400">
+					<span class="font-devanagari" lang="hi">उड़ान</span>
+					<span class="font-serif italic"> — flight</span>
+				</p>
+				<p class="mt-5 max-w-sm font-serif text-lg leading-snug text-stone-600">
+					A student-led nonprofit raising funds for vetted grassroots organizations across India.
+				</p>
+				<Button href={DONATE_URL} arrow class="mt-6">Donate</Button>
+			</div>
+
+			<nav class="grid grid-cols-2 gap-8 md:col-span-6 md:col-start-7" aria-label="Footer">
+				<div>
+					<p class="font-ui text-[11px] font-semibold tracking-[0.16em] text-stone-500 uppercase">Explore</p>
+					<ul class="font-ui mt-4 space-y-2.5 text-[14px] text-stone-600">
+						{
+							explore.map((link) => (
+								<li>
+									<a href={link.href} class="hover:text-ink transition-colors">
+										{link.label}
+									</a>
+								</li>
+							))
+						}
+					</ul>
+				</div>
+				<div>
+					<p class="font-ui text-[11px] font-semibold tracking-[0.16em] text-stone-500 uppercase">Get involved</p>
+					<ul class="font-ui mt-4 space-y-2.5 text-[14px] text-stone-600">
+						{
+							involved.map((link) => (
+								<li>
+									<a href={link.href} class="hover:text-ink break-all transition-colors">
+										{link.label}
+									</a>
+								</li>
+							))
+						}
+						{
+							SOCIALS.map((social) => (
+								<li>
+									<a href={social.href} class="hover:text-ink transition-colors" target="_blank" rel="noopener">
+										{social.label}
+									</a>
+								</li>
+							))
+						}
+					</ul>
+				</div>
+			</nav>
+		</div>
+
+		<div class="font-ui mt-14 flex flex-col gap-2 border-t border-stone-200 pt-6 text-[12px] text-stone-500 md:flex-row md:justify-between">
+			<p>
+				© {year} Udaan Foundation{LEGAL_NOTE && <span class="block md:inline md:before:content-['_·_']">{LEGAL_NOTE}</span>}
+			</p>
+			<p>Photos courtesy of our partners.</p>
+		</div>
+	</div>
+</footer>

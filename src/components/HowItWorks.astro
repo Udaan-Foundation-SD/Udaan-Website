@@ -1,0 +1,164 @@
+---
+// "How it works" — sticky intro + index on the left; three editorial steps on the right,
+// joined by a thin "aerial root" line that fills with leaf green as you scroll.
+const steps = [
+	{
+		label: 'Find and vet',
+		title: 'We find and vet grassroots partners.',
+		body: 'We look for small, community-run organizations doing real work with little outside support. Before partnering, we get to know the founders, learn how they operate, and verify their programs through photos, references, and local coverage.',
+		details: ['Community-led', 'Verifiable programs', 'Clear needs'],
+	},
+	{
+		label: 'Raise the funds',
+		title: "We raise the money they can't reach.",
+		body: 'Grassroots groups rarely have the networks or platforms to fundraise beyond their own city. We do. We share their stories and run campaigns that connect them with donors they could never reach on their own.',
+		details: ['Campaigns', 'Events', 'Online giving'],
+	},
+	{
+		label: 'Fund and report back',
+		title: 'Funds reach the ground, and we report back.',
+		body: 'Donations go to our partners to cover specific needs, from school supplies to meals. Then we show you what your money did, with updates and photos straight from the field.',
+		details: ['Specific needs', 'Regular updates', 'Photos from partners'],
+	},
+];
+
+const pad = (n: number) => String(n).padStart(2, '0');
+---
+
+<section id="how-it-works" class="group/hiw px-6 py-24 lg:px-12 lg:py-36" data-hiw>
+	<div class="mx-auto grid max-w-6xl gap-14 lg:grid-cols-12 lg:gap-10">
+		<!-- Left: pinned intro + step index -->
+		<div class="lg:col-span-5">
+			<div class="lg:sticky lg:top-36">
+				<p class="font-ui text-[11px] font-semibold tracking-[0.16em] text-stone-500 uppercase">How it works</p>
+				<h2 class="text-ink mt-3 font-serif text-4xl leading-[1.05] font-medium tracking-[-0.015em] text-balance md:text-5xl">
+					How a donation reaches the ground.
+				</h2>
+				<p class="mt-5 max-w-md font-serif text-lg leading-snug text-stone-500">
+					We sit between donors who want to help and grassroots organizations already doing the work. Here's what
+					happens in between.
+				</p>
+
+				<ol class="mt-10 hidden lg:block">
+					{
+						steps.map((step, i) => (
+							<li>
+								<a
+									href={`#step-${i + 1}`}
+									class="group/idx font-ui data-active:text-ink flex items-center gap-4 py-2 text-[13px] font-semibold text-stone-400 transition-colors duration-300 hover:text-stone-600"
+									data-hiw-index
+								>
+									<span class="group-data-active/idx:bg-leaf h-px w-6 bg-stone-300 transition-all duration-300 group-data-active/idx:w-10" />
+									<span class="tabular-nums">{pad(i + 1)}</span>
+									{step.label}
+								</a>
+							</li>
+						))
+					}
+				</ol>
+			</div>
+		</div>
+
+		<!-- Right: steps on the root line -->
+		<div class="relative lg:col-span-7">
+			<div class="absolute top-[11px] left-[7px] h-[calc(100%-11px)] w-px bg-stone-200" aria-hidden="true" data-hiw-track>
+				<div class="bg-leaf h-[calc(var(--hiw-progress,0)*100%)] w-full" data-hiw-fill></div>
+			</div>
+
+			<ol>
+				{
+					steps.map((step, i) => (
+						<li
+							id={`step-${i + 1}`}
+							class="group/step relative scroll-mt-36 pb-20 pl-12 transition-opacity duration-500 last:pb-0 group-data-enhanced/hiw:opacity-35 group-data-enhanced/hiw:data-active:opacity-100 motion-reduce:transition-none lg:min-h-[52vh] lg:pl-16 lg:last:min-h-0"
+							data-hiw-step
+						>
+							<span
+								class="group-data-reached/step:border-leaf group-data-reached/step:bg-leaf absolute top-1 left-0 size-[15px] rounded-full border border-stone-300 bg-white transition-colors duration-300"
+								aria-hidden="true"
+								data-hiw-node
+							/>
+							<p class="group-data-active/step:text-leaf font-serif text-6xl leading-none text-stone-300 tabular-nums transition-colors duration-500 lg:text-7xl">
+								{pad(i + 1)}
+							</p>
+							<h3 class="text-ink mt-6 font-serif text-3xl leading-[1.1] font-medium tracking-[-0.01em] text-balance md:text-4xl">
+								{step.title}
+							</h3>
+							<p class="mt-4 max-w-lg font-serif text-lg leading-snug text-stone-600">{step.body}</p>
+							<ul class="font-ui mt-6 flex flex-wrap gap-x-5 gap-y-2 text-[11px] font-semibold tracking-[0.12em] text-stone-500 uppercase">
+								{step.details.map((detail) => (
+									<li class="flex items-center gap-2">
+										<span class="bg-leaf size-1 rounded-full" aria-hidden="true" />
+										{detail}
+									</li>
+								))}
+							</ul>
+						</li>
+					))
+				}
+			</ol>
+		</div>
+	</div>
+</section>
+
+<script>
+	// Scroll-linked state: fill the root line, mark reached nodes, focus the current step + its index entry.
+	const section = document.querySelector<HTMLElement>('[data-hiw]');
+
+	if (section) {
+		const steps = [...section.querySelectorAll<HTMLElement>('[data-hiw-step]')];
+		const indexLinks = [...section.querySelectorAll<HTMLElement>('[data-hiw-index]')];
+		const track = section.querySelector<HTMLElement>('[data-hiw-track]');
+		const fill = section.querySelector<HTMLElement>('[data-hiw-fill]');
+		const nodes = steps.map((step) => step.querySelector<HTMLElement>('[data-hiw-node]'));
+
+		section.toggleAttribute('data-enhanced', true); // dimming only applies once JS is running
+
+		// End the line at the last node instead of running through the last step's text
+		const sizeTrack = () => {
+			const first = nodes[0];
+			const last = nodes[nodes.length - 1];
+			if (!track || !first || !last) return;
+			const firstCenter = first.getBoundingClientRect().top + first.offsetHeight / 2;
+			const lastCenter = last.getBoundingClientRect().top + last.offsetHeight / 2;
+			track.style.height = `${lastCenter - firstCenter}px`;
+		};
+
+		let queued = false;
+		const update = () => {
+			queued = false;
+			const line = window.innerHeight * 0.45; // the "reading line"
+
+			let active = 0;
+			steps.forEach((step, i) => {
+				if (nodes[i]!.getBoundingClientRect().top <= line) active = i;
+			});
+			steps.forEach((step, i) => {
+				const node = nodes[i]!;
+				step.toggleAttribute('data-active', i === active);
+				step.toggleAttribute('data-reached', node.getBoundingClientRect().top <= line);
+			});
+			indexLinks.forEach((link, i) => link.toggleAttribute('data-active', i === active));
+
+			if (track && fill) {
+				const rect = track.getBoundingClientRect();
+				const progress = Math.min(Math.max((line - rect.top) / rect.height, 0), 1);
+				fill.style.setProperty('--hiw-progress', progress.toFixed(4));
+			}
+		};
+		const queue = () => {
+			if (!queued) {
+				queued = true;
+				requestAnimationFrame(update);
+			}
+		};
+
+		sizeTrack();
+		update();
+		window.addEventListener('scroll', queue, { passive: true });
+		window.addEventListener('resize', () => {
+			sizeTrack();
+			queue();
+		});
+	}
+</script>

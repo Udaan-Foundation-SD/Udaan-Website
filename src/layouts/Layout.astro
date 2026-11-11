@@ -22,8 +22,15 @@ const {
 		<link rel="icon" href="/favicon.ico" />
 		<meta name="generator" content={Astro.generator} />
 		<title>{title}</title>
+		<!-- Turn on scroll motion before first paint, unless the visitor prefers reduced motion (see src/scripts/motion.ts) -->
+		<script is:inline>
+			if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) document.documentElement.classList.add('motion');
+		</script>
 	</head>
 	<body class="text-ink min-h-screen bg-white antialiased">
 		<slot />
+		<script>
+			import '../scripts/motion.ts';
+		</script>
 	</body>
 </html>

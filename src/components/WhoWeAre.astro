@@ -1,0 +1,74 @@
+---
+import { Image } from 'astro:assets';
+import BirdLogo from './BirdLogo.astro';
+import { TEAM } from '../data/site';
+
+// "Who we are" as a short letter from the team: narrow centered column, drop cap, signature.
+// Letter copy is a draft — the team should make it their own.
+const initials = (name: string) =>
+	name
+		.split(/\s+/)
+		.map((part) => part[0])
+		.join('')
+		.slice(0, 2)
+		.toUpperCase();
+---
+
+<section id="who-we-are" class="px-6 py-24 lg:py-36">
+	<div class="mx-auto max-w-2xl">
+		<div data-reveal>
+			<p class="font-ui text-[11px] font-semibold tracking-[0.16em] text-stone-500 uppercase">Who we are</p>
+			<h2 class="text-ink mt-3 font-serif text-4xl leading-[1.05] font-medium tracking-[-0.015em] text-balance md:text-5xl">
+				Run by students. Built on trust.
+			</h2>
+		</div>
+
+		<!-- The letter lights up word by word as you scroll (data-read-along) -->
+		<div class="mt-10 space-y-5 font-serif text-xl leading-relaxed text-stone-600" data-read-along>
+			<p
+				class="first-letter:text-leaf first-letter:float-left first-letter:mt-1.5 first-letter:mr-3 first-letter:font-serif first-letter:text-[4.6rem] first-letter:leading-[0.8] first-letter:font-medium"
+			>
+				Udaan is run entirely by high school students. We started it after seeing how many grassroots organizations in
+				India do remarkable work with almost nothing — not because they lack ideas or commitment, but because they lack
+				funding, and the reach to raise it.
+			</p>
+			<p>
+				That reach is something we have. Through our schools, our communities, and the platforms we use every day, we
+				can put these organizations in front of people who want to help. Udaan turns that access into funding, and sends
+				it to partners we have vetted ourselves.
+			</p>
+			<p>
+				We take that trust seriously. Every partner we feature is one we know, and every donation comes with a promise:
+				we'll show you where it went.
+			</p>
+		</div>
+
+		<!-- The bird flies in and lands beside the signature (fx-fly) -->
+		<div class="mt-10 flex items-center gap-3" data-scroll>
+			<BirdLogo class="fx-fly text-leaf h-5 w-auto" />
+			<p class="text-ink font-serif text-2xl italic">The Udaan team</p>
+		</div>
+
+		{
+			TEAM.length > 0 && (
+				<ul class="mt-14 grid grid-cols-2 gap-x-6 gap-y-8 border-t border-stone-200 pt-10 sm:grid-cols-3 md:grid-cols-4">
+					{TEAM.map((member) => (
+						<li>
+							<div class="aspect-square overflow-hidden rounded-md bg-stone-100">
+								{member.photo ? (
+									<Image src={member.photo} alt={member.name} widths={[240, 480]} sizes="200px" class="h-full w-full object-cover" />
+								) : (
+									<div class="flex h-full w-full items-center justify-center font-serif text-3xl text-stone-400">
+										{initials(member.name)}
+									</div>
+								)}
+							</div>
+							<p class="text-ink mt-3 font-serif text-lg leading-tight">{member.name}</p>
+							<p class="font-ui mt-0.5 text-[12px] font-semibold text-stone-500">{member.role}</p>
+						</li>
+					))}
+				</ul>
+			)
+		}
+	</div>
+</section>

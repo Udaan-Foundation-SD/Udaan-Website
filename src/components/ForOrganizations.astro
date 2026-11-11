@@ -1,0 +1,66 @@
+---
+import Button from './Button.astro';
+import { APPLY_URL } from '../data/site';
+
+// For grassroots organizations who want funding. Criteria mirror step 01 of "How it works".
+const criteria = [
+	{ title: 'Community-led', body: 'Run by people from the community it serves, who know its needs firsthand.' },
+	{ title: 'Real, visible work', body: 'Programs we can see and verify, through photos, references, or local coverage.' },
+	{ title: 'A clear need', body: 'A specific gap, from supplies to staff, that funding can directly fill.' },
+];
+---
+
+<section id="apply" class="px-6 pb-24 lg:px-12 lg:pb-36">
+	<div class="relative mx-auto grid max-w-6xl gap-12 pt-16 lg:grid-cols-12 lg:gap-10 lg:pt-20">
+		<span class="absolute inset-x-0 top-0 h-px bg-stone-200" aria-hidden="true" data-reveal="draw"></span>
+		<div class="lg:col-span-5">
+			<p class="font-ui text-[11px] font-semibold tracking-[0.16em] text-stone-500 uppercase" data-reveal>For organizations</p>
+			<h2
+				class="text-ink mt-3 font-serif text-4xl leading-[1.05] font-medium tracking-[-0.015em] text-balance md:text-5xl"
+				data-reveal
+				style="--delay: 80ms"
+			>
+				Run a grassroots organization in India?
+			</h2>
+			<p class="font-devanagari mt-3 text-2xl leading-snug text-stone-400" lang="hi" data-reveal style="--delay: 200ms">
+				क्या आप एक ज़मीनी संस्था चलाते हैं?
+			</p>
+			<p class="mt-6 max-w-md font-serif text-lg leading-snug text-stone-600" data-reveal style="--delay: 300ms">
+				If you're doing real work in your community and funding is what holds you back, we'd like to hear from you. Tell
+				us about your organization and what you need.
+			</p>
+			<div class="mt-8" data-reveal style="--delay: 400ms">
+				<Button href={APPLY_URL} arrow>Apply for funding</Button>
+			</div>
+		</div>
+
+		<div class="lg:col-span-6 lg:col-start-7">
+			<p class="font-ui text-[11px] font-semibold tracking-[0.16em] text-stone-500 uppercase">What we look for</p>
+			<!-- Each row: its line draws across, then its text arrives -->
+			<ol class="relative mt-4">
+				{
+					criteria.map((item, i) => (
+						<li class="relative grid grid-cols-[2.5rem_1fr] gap-x-4 py-6">
+							<span
+								class="absolute inset-x-0 top-0 h-px bg-stone-200"
+								aria-hidden="true"
+								data-reveal="draw"
+								style={`--delay: ${i * 160}ms`}
+							/>
+							<span class="font-ui pt-1.5 text-[12px] font-semibold text-stone-400 tabular-nums">
+								{String(i + 1).padStart(2, '0')}
+							</span>
+							<div data-reveal style={`--delay: ${i * 160 + 180}ms`}>
+								<h3 class="text-ink font-serif text-2xl leading-tight font-medium">{item.title}</h3>
+								<p class="mt-1.5 font-serif text-lg leading-snug text-stone-600">{item.body}</p>
+							</div>
+						</li>
+					))
+				}
+				<li class="relative h-px" aria-hidden="true">
+					<span class="absolute inset-x-0 top-0 h-px bg-stone-200" data-reveal="draw" style={`--delay: ${criteria.length * 160}ms`} />
+				</li>
+			</ol>
+		</div>
+	</div>
+</section>

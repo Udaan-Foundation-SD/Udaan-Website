@@ -5,7 +5,8 @@ import banyan from '../assets/banyan.jpg';
 import cricket from '../assets/partners/gurukulam-cricket.jpg';
 import openAirClass from '../assets/partners/gurukulam-open-air-class.jpg';
 import snack from '../assets/partners/gurukulam-snack.jpg';
-import press from '../assets/partners/gurukulam-press-dainik-jagran.jpg';
+import girlsCricket from '../assets/partners/gurukulam-girls-cricket.jpg';
+import ceremony from '../assets/partners/gurukulam-teachers-ceremony-2023.jpg';
 
 // Partner photos for the editorial collage.
 // To add one: put the file in src/assets/partners/, import it above, and add an entry (leave `src` out for a placeholder frame).
@@ -42,30 +43,41 @@ const photos: Photo[] = [
 		img: grade,
 	},
 	{
+		src: girlsCricket,
+		alt: 'Girls in Gurukulam shirts, helmets, and batting pads practise their stance together on a dusty ground',
+		caption: "Girls' batting practice",
+		place: 'Gurukulam, Kanpur',
+		span: 'col-span-1 md:col-span-5 md:col-start-2 md:-mt-32',
+		frame: 'aspect-[3/4]',
+		img: grade,
+	},
+	{
 		src: snack,
 		alt: 'A young boy in a white school shirt eats roasted chana from a lunchbox, with a banana and a Gurukulam card on his lap',
 		caption: 'Chana and a banana after class',
 		place: 'Gurukulam',
-		span: 'col-span-1 md:col-span-4 md:col-start-2 md:-mt-16',
+		span: 'col-span-1 md:col-span-4 md:col-start-8 md:mt-20',
 		frame: 'aspect-[4/5]',
 		img: `object-[50%_35%] ${grade}`,
 	},
 	{
-		src: press,
-		alt: 'Dainik Jagran Kanpur newspaper feature on Gurukulam, with a photo of its founder surrounded by smiling children',
-		caption: 'Featured in Dainik Jagran',
-		place: 'July 2026',
-		span: 'col-span-2 md:col-span-6 md:col-start-7 md:mt-6',
-		frame: 'aspect-[978/467] bg-white', // clipping's own shape, so no text is cropped
+		src: ceremony,
+		alt: "A speaker at a podium and a smiling guest seated on stage at the 16th Sandipani Distinguished Teachers' Honour Ceremony, 2023",
+		caption: "At a teachers' honour ceremony",
+		place: '2023',
+		span: 'col-span-1 md:col-span-4 md:col-start-4 md:-mt-10',
+		frame: 'aspect-[3/4]',
+		img: grade,
 	},
 ];
 ---
 
 <section id="partners" class="pt-14 lg:pt-24">
-	<!-- Inset rounded panel that widens toward the screen edges as it scrolls up (--k: 1 → 0, set by the script below) -->
+	<!-- Inset rounded panel that widens toward the screen edges as it scrolls up (--k: 1 → 0, set by data-widen in src/scripts/motion.ts) -->
 	<div
 		class="bg-canopy relative isolate mx-[calc(var(--inset-max)*var(--k,1))] overflow-clip rounded-[calc(8px+12px*var(--k,1))] [--inset-max:12px] lg:[--inset-max:48px]"
 		data-showcase
+		data-widen
 	>
 		<!-- Background pins to the viewport once the panel reaches the top (full width), while the photos scroll over it.
 		     Needs overflow-clip (not overflow-hidden) on the panel, or sticky stops working. -->
@@ -83,10 +95,17 @@ const photos: Photo[] = [
 		</div>
 
 		<div class="mx-auto max-w-6xl px-5 pt-12 pb-20 md:px-8 lg:pt-20 lg:pb-32">
+			<header class="mb-10 max-w-xl text-white md:mb-14" data-reveal>
+				<p class="font-ui text-[11px] font-semibold tracking-[0.16em] text-white/85 uppercase">From the field</p>
+				<h2 class="mt-3 font-serif text-3xl leading-[1.08] font-medium tracking-[-0.015em] text-balance md:text-4xl lg:text-5xl">
+					Real moments, shared by the partners we fund.
+				</h2>
+			</header>
+
 			<div class="grid grid-cols-2 gap-x-3 gap-y-8 md:grid-cols-12 md:gap-x-6 md:gap-y-12">
 				{
 					photos.map((photo, i) => (
-						<figure class={photo.span}>
+						<figure class={photo.span} data-reveal style={`--delay: ${(i % 2) * 120}ms`}>
 							<div class:list={['overflow-hidden rounded-md', photo.frame]}>
 								{photo.src ? (
 									<Image
@@ -123,28 +142,3 @@ const photos: Photo[] = [
 	</div>
 </section>
 
-<script>
-	// Widen the panel as it scrolls up: --k goes from 1 (inset, rounded) to 0 (edge to edge).
-	const panel = document.querySelector<HTMLElement>('[data-showcase]');
-	const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-	if (panel && !reduceMotion) {
-		let queued = false;
-		const update = () => {
-			queued = false;
-			const top = panel.getBoundingClientRect().top;
-			const progress = Math.min(Math.max((window.innerHeight - top) / window.innerHeight, 0), 1);
-			const k = Math.min(Math.max((1 - progress) / 0.65, 0), 1);
-			panel.style.setProperty('--k', k.toFixed(3));
-		};
-		const queue = () => {
-			if (!queued) {
-				queued = true;
-				requestAnimationFrame(update);
-			}
-		};
-		window.addEventListener('scroll', queue, { passive: true });
-		window.addEventListener('resize', queue);
-		update();
-	}
-</script>

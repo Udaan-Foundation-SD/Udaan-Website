@@ -1,5 +1,6 @@
 @import "@fontsource-variable/eb-garamond/wght.css";
 @import "@fontsource-variable/manrope/wght.css";
+@import "@fontsource/tiro-devanagari-hindi/devanagari-400.css";
 @import "tailwindcss";
 
 @theme {
@@ -8,6 +9,8 @@
 	/* Buttons, nav, small labels */
 	--font-ui: "Manrope Variable", ui-sans-serif, system-ui, sans-serif;
 	--font-sans: var(--font-ui);
+	/* Hindi / Devanagari text (e.g. partner names) — pairs with Garamond */
+	--font-devanagari: "Tiro Devanagari Hindi", "Noto Serif Devanagari", serif;
 
 	/* Warm near-black for text on white */
 	--color-ink: #1a1814;
@@ -16,4 +19,62 @@
 	/* Lush leaf green for primary buttons — white text on it passes WCAG AA (5.3:1) */
 	--color-leaf: #2d7a3e;
 	--color-leaf-deep: #246332;
+}
+
+/* In-page links (#donate, #apply…) land below the sticky navbar, and glide there unless reduced motion is on */
+html {
+	scroll-padding-top: 6rem;
+}
+@media (prefers-reduced-motion: no-preference) {
+	html {
+		scroll-behavior: smooth;
+	}
+}
+
+/* ---------- Scroll motion (driven by src/scripts/motion.ts; only active when <html> has .motion) ---------- */
+.motion [data-reveal] {
+	transition:
+		opacity 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) var(--delay, 0ms),
+		translate 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) var(--delay, 0ms),
+		scale 1.2s cubic-bezier(0.65, 0, 0.35, 1) var(--delay, 0ms);
+}
+.motion [data-reveal]:not([data-revealed]) {
+	opacity: 0;
+	translate: 0 1.5rem;
+}
+/* Lines that draw themselves left → right */
+[data-reveal="draw"] {
+	transform-origin: left center;
+}
+.motion [data-reveal="draw"]:not([data-revealed]) {
+	opacity: 1;
+	translate: none;
+	scale: 0 1;
+}
+
+/* Read-along: words light up as you scroll */
+.motion [data-read-along] .ra-word {
+	opacity: 0.22;
+	transition: opacity 0.35s ease;
+}
+.motion [data-read-along] .ra-word[data-on] {
+	opacity: 1;
+}
+
+/* Scroll-linked effects. --p comes from [data-scroll] (0 entering → 1 leaving); defaults show the settled state. */
+.fx-pin {
+	/* settles once the element reaches the middle of the screen */
+	--t: min(1, var(--p, 1) * 2);
+	rotate: calc(1.5deg - 10deg * (1 - var(--t)));
+	translate: 0 calc(5rem * (1 - var(--t)));
+}
+.fx-parallax {
+	scale: 1.12;
+	translate: 0 calc((var(--p, 0.5) - 0.5) * -6rem);
+}
+.fx-fly {
+	--t: min(1, var(--p, 1) * 2.4);
+	opacity: var(--t);
+	translate: calc(-3rem * (1 - var(--t))) calc(1.25rem * (1 - var(--t)));
+	rotate: calc(-25deg * (1 - var(--t)));
 }

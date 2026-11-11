@@ -1,13 +1,14 @@
 ---
 import BirdLogo from './BirdLogo.astro';
 import Button from './Button.astro';
+import { APPLY_URL, DONATE_URL } from '../data/site';
 
-// Placeholder links — `menu: true` shows a dropdown chevron (dropdowns not wired up yet)
+// Links to the home page sections
 const links = [
-	{ label: 'About', href: '#about', menu: true },
-	{ label: 'Our Partners', href: '#partners', menu: true },
-	{ label: 'Impact', href: '#impact' },
-	{ label: 'Get Involved', href: '#get-involved' },
+	{ label: 'How it works', href: '#how-it-works' },
+	{ label: 'Our partners', href: '#gurukulam' },
+	{ label: 'Who we are', href: '#who-we-are' },
+	{ label: 'Get involved', href: '#donate' },
 ];
 ---
 
@@ -24,15 +25,10 @@ const links = [
 
 			<ul class="hidden items-center gap-8 text-[15px] text-stone-600 lg:flex">
 				{
-					links.map(({ label, href, menu }) => (
+					links.map(({ label, href }) => (
 						<li>
-							<a href={href} class="hover:text-ink inline-flex items-center gap-1 transition-colors">
+							<a href={href} class="hover:text-ink transition-colors">
 								{label}
-								{menu && (
-									<svg viewBox="0 0 12 12" class="size-3" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-										<path d="M3 4.5 6 7.5 9 4.5" stroke-linecap="round" stroke-linejoin="round" />
-									</svg>
-								)}
 							</a>
 						</li>
 					))
@@ -41,8 +37,8 @@ const links = [
 		</div>
 
 		<div class="flex items-center gap-2.5">
-			<Button href="#apply" variant="secondary" class="max-md:hidden">Apply for funding</Button>
-			<Button href="#donate" arrow class="max-sm:hidden">Donate</Button>
+			<Button href={APPLY_URL} variant="secondary" class="max-md:hidden">Apply for funding</Button>
+			<Button href={DONATE_URL} arrow class="max-sm:hidden">Donate</Button>
 
 			<button
 				type="button"
@@ -76,8 +72,8 @@ const links = [
 			}
 		</ul>
 		<div class="mt-2 grid gap-2 p-2 md:hidden">
-			<Button href="#donate" arrow class="py-2.5! sm:hidden">Donate</Button>
-			<Button href="#apply" variant="secondary" class="py-2.5!">Apply for funding</Button>
+			<Button href={DONATE_URL} arrow class="py-2.5! sm:hidden">Donate</Button>
+			<Button href={APPLY_URL} variant="secondary" class="py-2.5!">Apply for funding</Button>
 		</div>
 	</div>
 </header>
@@ -99,4 +95,11 @@ const links = [
 		toggle.querySelector('[data-icon-open]')?.classList.toggle('hidden', open);
 		toggle.querySelector('[data-icon-close]')?.classList.toggle('hidden', !open);
 	});
+
+	// Close the phone menu after tapping a link in it
+	menu?.querySelectorAll('a').forEach((link) =>
+		link.addEventListener('click', () => {
+			if (toggle?.getAttribute('aria-expanded') === 'true') toggle.click();
+		}),
+	);
 </script>
