@@ -25,10 +25,46 @@
 html {
 	scroll-padding-top: 6rem;
 }
+
+/* Safety net: decorative pieces that hang off the edge (tilted clipping, birds) can never cause sideways scrolling.
+   `clip` (not `hidden`) keeps position: sticky working for the navbar and the pinned banyan photo. */
+body {
+	overflow-x: clip;
+}
 @media (prefers-reduced-motion: no-preference) {
 	html {
 		scroll-behavior: smooth;
 	}
+}
+
+/* ---------- Long-form text (partner stories, privacy) — Garamond, matching the site's sections ---------- */
+.prose-udaan {
+	font-family: var(--font-serif);
+	font-size: 1.25rem;
+	line-height: 1.6;
+	color: var(--color-stone-600);
+}
+.prose-udaan > * + * {
+	margin-top: 1.1em;
+}
+.prose-udaan h2 {
+	margin-top: 2.2em;
+	color: var(--color-ink);
+	font-size: 1.875rem;
+	line-height: 1.15;
+	font-weight: 500;
+	letter-spacing: -0.01em;
+}
+.prose-udaan h2:first-child {
+	margin-top: 0;
+}
+.prose-udaan h2 + p {
+	margin-top: 0.6em;
+}
+.prose-udaan a {
+	color: var(--color-leaf);
+	text-decoration: underline;
+	text-underline-offset: 4px;
 }
 
 /* ---------- Scroll motion (driven by src/scripts/motion.ts; only active when <html> has .motion) ---------- */
@@ -71,6 +107,17 @@ html {
 .fx-parallax {
 	scale: 1.12;
 	translate: 0 calc((var(--p, 0.5) - 0.5) * -6rem);
+}
+/* Team portraits: develop from black-and-white into (gently graded) colour as they're revealed.
+   Same filter-function list in both states so the browser can animate between them. */
+.fx-develop img {
+	filter: grayscale(0) saturate(0.85) contrast(1.03);
+}
+.motion .fx-develop img {
+	transition: filter 1.6s ease var(--delay, 0ms);
+}
+.motion .fx-develop:not([data-revealed]) img {
+	filter: grayscale(1) saturate(0.85) contrast(1.03);
 }
 .fx-fly {
 	--t: min(1, var(--p, 1) * 2.4);

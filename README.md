@@ -1,43 +1,51 @@
-# Astro Starter Kit: Minimal
+# Udaan Foundation website
+
+The website for Udaan Foundation, a student-led group that vets grassroots organizations in India and raises funds for them. Built with [Astro](https://astro.build) and [Tailwind CSS](https://tailwindcss.com).
+
+## Running it
+
+You need Node.js 22.12 or newer.
 
 ```sh
-npm create astro@latest -- --template minimal
+npm install      # once
+npm run dev      # local preview at http://localhost:4321
+npm run build    # production build into dist/
+npm run preview  # preview the production build
 ```
 
-> 🧑‍🚀 **Seasoned astronaut?** Delete this file. Have fun!
+## Where to change things
 
-## 🚀 Project Structure
+Most day-to-day updates don't need any code — just these files:
 
-Inside of your Astro project, you'll see the following folders and files:
+| What | Where |
+|---|---|
+| Contact email, donation checkout link (e.g. Givebutter), application form link, legal / tax lines, social links | `src/data/site.ts` |
+| Team members (names, roles, grade, photos) | `TEAM` in `src/data/site.ts` |
+| Donation amounts, "what we look for" criteria | `src/data/site.ts` |
+| Partner organizations | one Markdown file each in `src/content/partners/` (copy `gurukulam.md`) |
+| Photos | `src/assets/` (partner photos in `src/assets/partners/`) |
+| Live domain (for share previews) | `site` in `astro.config.mjs` |
 
-```text
-/
-├── public/
-├── src/
-│   └── pages/
-│       └── index.astro
-└── package.json
-```
+Anything left empty in `src/data/site.ts` is simply hidden on the site, so no placeholder text goes live.
 
-Astro looks for `.astro` or `.md` files in the `src/pages/` directory. Each page is exposed as a route based on its file name.
+- **Team page:** names and roles only shows a masthead list; once anyone has a photo it switches to a portrait grid.
+- **Donate page:** shows a "Donations opening soon" preview until `DONATE_CHECKOUT_URL` is set.
+- **Apply page:** shows "Our application form is opening soon" until `APPLY_FORM_URL` is set.
 
-There's nothing special about `src/components/`, but that's where we like to put any Astro/React/Vue/Svelte/Preact components.
+## Pages
 
-Any static assets, like images, can be placed in the `public/` directory.
+`/` home · `/donate` · `/partners` and `/partners/<name>` · `/apply` · `/team` · `/privacy` · custom 404
 
-## 🧞 Commands
+## Design system (short version)
 
-All commands are run from the root of the project, from a terminal:
+- **Type:** EB Garamond for headlines and body copy; Manrope for buttons, navigation, and small labels; Tiro Devanagari Hindi for Hindi text.
+- **Colors** (in `src/styles/global.css`): `ink` (text), `leaf` (buttons/accents), `canopy` (dark panels).
+- **Shared pieces:** `Button`, `Wordmark`, `DonateForm`, `PressCard` in `src/components/`.
+- **Scroll motion:** add `data-reveal`, `data-read-along`, `data-count`, `data-scroll`, or `data-widen` to elements — see `src/scripts/motion.ts`. Everything is skipped for visitors who prefer reduced motion.
 
-| Command                   | Action                                           |
-| :------------------------ | :----------------------------------------------- |
-| `npm install`             | Installs dependencies                            |
-| `npm run dev`             | Starts local dev server at `localhost:4321`      |
-| `npm run build`           | Build your production site to `./dist/`          |
-| `npm run preview`         | Preview your build locally, before deploying     |
-| `npm run astro ...`       | Run CLI commands like `astro add`, `astro check` |
-| `npm run astro -- --help` | Get help using the Astro CLI                     |
+## Before launch / still to do
 
-## 👀 Want to learn more?
-
-Feel free to check [our documentation](https://docs.astro.build) or jump into our [Discord server](https://astro.build/chat).
+- Set `site` in `astro.config.mjs` to the real domain.
+- Add `DONATE_CHECKOUT_URL` (Givebutter) and `APPLY_FORM_URL` when ready.
+- Add a public `CONTACT_EMAIL`, and the fiscal sponsor's legal line (`LEGAL_NOTE`, `TAX_NOTE`) once confirmed.
+- Confirm partner facts and process copy, and parent/guardian consent for photos of children.

@@ -1,14 +1,14 @@
 ---
+import Wordmark from './Wordmark.astro';
 import BirdLogo from './BirdLogo.astro';
 import Button from './Button.astro';
-import { APPLY_URL, DONATE_URL } from '../data/site';
 
-// Links to the home page sections
+// Site-wide links (home sections use /#… so they work from any page)
 const links = [
-	{ label: 'How it works', href: '#how-it-works' },
-	{ label: 'Our partners', href: '#gurukulam' },
-	{ label: 'Who we are', href: '#who-we-are' },
-	{ label: 'Get involved', href: '#donate' },
+	{ label: 'How it works', href: '/#how-it-works' },
+	{ label: 'Our partners', href: '/partners' },
+	{ label: 'Team', href: '/team' },
+	{ label: 'Get involved', href: '/#donate' },
 ];
 ---
 
@@ -18,9 +18,8 @@ const links = [
 		class="mx-auto flex max-w-full items-center justify-between rounded-xl border border-transparent px-6 py-5 transition-all duration-300 group-data-scrolled:mt-3 group-data-scrolled:max-w-5xl group-data-scrolled:border-stone-200 group-data-scrolled:bg-white/85 group-data-scrolled:py-3 group-data-scrolled:shadow-[0_1px_12px_rgb(0_0_0/0.04)] group-data-scrolled:backdrop-blur-md lg:px-12 lg:group-data-scrolled:px-6"
 	>
 		<div class="flex items-center gap-12">
-			<a href="/" class="text-ink flex items-center gap-2" aria-label="Udaan Foundation home">
-				<BirdLogo class="h-6 w-auto" />
-				<span class="text-xl font-bold tracking-tight">Udaan</span>
+			<a href="/" class="text-ink block" aria-label="Udaan Foundation home">
+				<Wordmark class="h-8 w-auto lg:h-9" title="" />
 			</a>
 
 			<ul class="hidden items-center gap-8 text-[15px] text-stone-600 lg:flex">
@@ -37,69 +36,222 @@ const links = [
 		</div>
 
 		<div class="flex items-center gap-2.5">
-			<Button href={APPLY_URL} variant="secondary" class="max-md:hidden">Apply for funding</Button>
-			<Button href={DONATE_URL} arrow class="max-sm:hidden">Donate</Button>
+			<Button href="/apply" variant="secondary" class="max-md:hidden">Apply for funding</Button>
+			<Button href="/donate" arrow class="max-sm:hidden">Donate</Button>
 
 			<button
 				type="button"
-				class="text-ink -mr-2 p-2 lg:hidden"
+				class="text-ink focus-visible:outline-leaf -mr-2 rounded-md p-2 focus-visible:outline-2 lg:hidden"
 				aria-label="Open menu"
 				aria-expanded="false"
 				aria-controls="mobile-menu"
 				data-menu-toggle
 			>
-				<svg viewBox="0 0 24 24" class="size-6" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true">
-					<path d="M4 7h16M4 12h16M4 17h16" stroke-linecap="round" data-icon-open></path>
-					<path d="M6 6l12 12M18 6 6 18" stroke-linecap="round" class="hidden" data-icon-close></path>
+				<svg viewBox="0 0 24 24" class="size-6" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+					<path d="M3.5 8.5h17M9.5 15.5h11" stroke-linecap="round"></path>
 				</svg>
 			</button>
 		</div>
 	</div>
+</header>
 
-	<div
-		id="mobile-menu"
-		class="absolute inset-x-3 top-full mt-2 hidden rounded-xl border border-stone-200 bg-white p-2 shadow-lg lg:hidden"
-	>
-		<ul class="text-ink text-base">
+<!--
+	Full-screen phone menu. Opens as a circle expanding from the menu button (clip-path),
+	then the links rise in one after another. Lives outside <header> so the header's
+	backdrop blur can't trap it inside the floating card.
+-->
+<div
+	id="mobile-menu"
+	class="mobile-menu bg-canopy fixed inset-0 z-50 flex flex-col overflow-y-auto px-6 pt-5 pb-8 text-white [--wordmark-accent:#9fd3a9] lg:hidden"
+	role="dialog"
+	aria-modal="true"
+	aria-label="Menu"
+	inert
+	data-mobile-menu
+>
+	<!-- Decorative bird hangs off the edge; its own clipped frame keeps the menu from scrolling sideways -->
+	<div class="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+		<BirdLogo class="absolute -right-16 bottom-28 h-64 w-auto text-white/[0.045]" />
+	</div>
+
+	<div class="relative flex items-center justify-between">
+		<a href="/" class="mm-item block text-white" style="--i: 0" aria-label="Udaan Foundation home">
+			<Wordmark class="h-8 w-auto" title="" />
+		</a>
+		<button
+			type="button"
+			class="-mr-2 rounded-md p-2 focus-visible:outline-2 focus-visible:outline-white"
+			aria-label="Close menu"
+			data-menu-close
+		>
+			<svg viewBox="0 0 24 24" class="size-6" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+				<path d="M6 6l12 12M18 6 6 18" stroke-linecap="round"></path>
+			</svg>
+		</button>
+	</div>
+
+	<nav class="relative mt-14 flex-1" aria-label="Main">
+		<ol class="space-y-1">
 			{
-				links.map(({ label, href }) => (
-					<li>
-						<a href={href} class="block rounded-lg px-4 py-3 hover:bg-stone-100">
-							{label}
+				links.map(({ label, href }, i) => (
+					<li class="mm-item" style={`--i: ${i + 1}`}>
+						<a href={href} class="group flex items-baseline gap-4 py-2.5">
+							<span class="font-ui text-[11px] font-semibold tracking-[0.14em] text-white/45 tabular-nums">
+								{String(i + 1).padStart(2, '0')}
+							</span>
+							<span class="font-serif text-[2.6rem] leading-[1.05] font-medium tracking-[-0.02em] transition-colors group-hover:text-white/70">
+								{label}
+							</span>
 						</a>
 					</li>
 				))
 			}
-		</ul>
-		<div class="mt-2 grid gap-2 p-2 md:hidden">
-			<Button href={DONATE_URL} arrow class="py-2.5! sm:hidden">Donate</Button>
-			<Button href={APPLY_URL} variant="secondary" class="py-2.5!">Apply for funding</Button>
-		</div>
+		</ol>
+	</nav>
+
+	<div class="mm-item relative mt-10 grid gap-3" style={`--i: ${links.length + 1}`}>
+		<a
+			href="/donate"
+			class="group font-ui text-ink flex items-center justify-center gap-2 rounded-md bg-white py-3 text-[14px] font-semibold transition-colors hover:bg-stone-200"
+		>
+			Donate
+			<svg viewBox="0 0 16 16" class="size-3 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" fill="none" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+				<path d="M4.5 11.5 11.5 4.5M5.5 4.5h6v6" stroke-linecap="round" stroke-linejoin="round"></path>
+			</svg>
+		</a>
+		<a
+			href="/apply"
+			class="font-ui flex items-center justify-center rounded-md border border-white/25 py-3 text-[14px] font-semibold text-white transition-colors hover:border-white/60"
+		>
+			Apply for funding
+		</a>
+		<p class="mt-4 text-center text-sm text-white/45">
+			<span class="font-devanagari" lang="hi">उड़ान</span>
+			<span class="font-serif italic"> — flight</span>
+		</p>
 	</div>
-</header>
+</div>
+
+<style>
+	/* Closed: a zero-size circle at the menu button. Open: a circle big enough to cover the screen. */
+	.mobile-menu {
+		clip-path: circle(0px at var(--mx, calc(100% - 2.6rem)) var(--my, 2.6rem));
+		visibility: hidden;
+		transition:
+			clip-path 0.7s cubic-bezier(0.76, 0, 0.24, 1),
+			visibility 0s linear 0.7s;
+	}
+	.mobile-menu[data-open] {
+		clip-path: circle(150vmax at var(--mx, calc(100% - 2.6rem)) var(--my, 2.6rem));
+		visibility: visible;
+		transition:
+			clip-path 0.7s cubic-bezier(0.76, 0, 0.24, 1),
+			visibility 0s;
+	}
+
+	/* Contents rise in one after another once the circle has mostly opened */
+	.mm-item {
+		opacity: 0;
+		translate: 0 1.25rem;
+		transition:
+			opacity 0.3s ease,
+			translate 0.3s ease;
+	}
+	.mobile-menu[data-open] .mm-item {
+		opacity: 1;
+		translate: 0 0;
+		transition:
+			opacity 0.6s ease calc(0.22s + var(--i, 0) * 60ms),
+			translate 0.7s cubic-bezier(0.2, 0.7, 0.2, 1) calc(0.22s + var(--i, 0) * 60ms);
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.mobile-menu {
+			clip-path: none;
+			opacity: 0;
+			transition:
+				opacity 0.2s ease,
+				visibility 0s linear 0.2s;
+		}
+		.mobile-menu[data-open] {
+			clip-path: none;
+			opacity: 1;
+			transition:
+				opacity 0.2s ease,
+				visibility 0s;
+		}
+		.mm-item,
+		.mobile-menu[data-open] .mm-item {
+			opacity: 1;
+			translate: none;
+			transition: none;
+		}
+	}
+</style>
 
 <script>
 	const header = document.querySelector<HTMLElement>('[data-site-header]');
 	const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
-	const menu = document.getElementById('mobile-menu');
+	const menu = document.querySelector<HTMLElement>('[data-mobile-menu]');
+	const closeButton = menu?.querySelector<HTMLButtonElement>('[data-menu-close]');
 
+	// Floating-card header once the page scrolls
 	const onScroll = () => header?.toggleAttribute('data-scrolled', window.scrollY > 16);
 	window.addEventListener('scroll', onScroll, { passive: true });
 	onScroll();
 
-	toggle?.addEventListener('click', () => {
-		const open = toggle.getAttribute('aria-expanded') !== 'true';
-		toggle.setAttribute('aria-expanded', String(open));
-		toggle.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
-		menu?.classList.toggle('hidden', !open);
-		toggle.querySelector('[data-icon-open]')?.classList.toggle('hidden', open);
-		toggle.querySelector('[data-icon-close]')?.classList.toggle('hidden', !open);
+	const isOpen = () => menu?.hasAttribute('data-open') ?? false;
+
+	const openMenu = () => {
+		if (!menu || !toggle) return;
+		// Grow the circle from the centre of the menu button
+		const r = toggle.getBoundingClientRect();
+		menu.style.setProperty('--mx', `${r.left + r.width / 2}px`);
+		menu.style.setProperty('--my', `${r.top + r.height / 2}px`);
+		menu.removeAttribute('inert');
+		menu.setAttribute('data-open', '');
+		toggle.setAttribute('aria-expanded', 'true');
+		document.documentElement.style.overflow = 'hidden'; // stop the page scrolling behind
+		closeButton?.focus({ preventScroll: true });
+	};
+
+	const closeMenu = (returnFocus = true) => {
+		if (!menu || !toggle || !isOpen()) return;
+		menu.removeAttribute('data-open');
+		menu.setAttribute('inert', '');
+		toggle.setAttribute('aria-expanded', 'false');
+		document.documentElement.style.overflow = '';
+		if (returnFocus) toggle.focus({ preventScroll: true });
+	};
+
+	toggle?.addEventListener('click', openMenu);
+	closeButton?.addEventListener('click', () => closeMenu());
+
+	// Tapping a link closes the menu (then the browser follows the link)
+	menu?.querySelectorAll('a').forEach((link) => link.addEventListener('click', () => closeMenu(false)));
+
+	// Esc closes; Tab stays inside the menu while it's open
+	document.addEventListener('keydown', (event) => {
+		if (!isOpen() || !menu) return;
+		if (event.key === 'Escape') {
+			event.preventDefault();
+			closeMenu();
+		} else if (event.key === 'Tab') {
+			const focusable = [...menu.querySelectorAll<HTMLElement>('a, button')];
+			const first = focusable[0];
+			const last = focusable[focusable.length - 1];
+			if (event.shiftKey && document.activeElement === first) {
+				event.preventDefault();
+				last.focus();
+			} else if (!event.shiftKey && document.activeElement === last) {
+				event.preventDefault();
+				first.focus();
+			}
+		}
 	});
 
-	// Close the phone menu after tapping a link in it
-	menu?.querySelectorAll('a').forEach((link) =>
-		link.addEventListener('click', () => {
-			if (toggle?.getAttribute('aria-expanded') === 'true') toggle.click();
-		}),
-	);
+	// Widening past the phone layout closes it
+	window.matchMedia('(min-width: 1024px)').addEventListener('change', (query) => {
+		if (query.matches) closeMenu(false);
+	});
 </script>

@@ -1,0 +1,84 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { CONTACT_EMAIL } from '../data/site';
+
+// DRAFT privacy notice in plain language, written to match what this site actually does today
+// (no cookies, no analytics, no third-party scripts; fonts and images are self-hosted).
+// Not legal advice — have it reviewed, and update it when you add a payment provider, form tool, or analytics.
+const UPDATED = '12 November 2026';
+---
+
+<Layout title="Privacy · Udaan Foundation" description="How Udaan Foundation handles personal information.">
+	<main class="px-6 pt-12 pb-24 lg:px-12 lg:pt-20 lg:pb-36">
+		<div class="max-w-6xl">
+			<p class="font-ui text-[11px] font-semibold tracking-[0.16em] text-stone-500 uppercase" data-reveal>Privacy</p>
+			<h1
+				class="text-ink mt-3 max-w-3xl font-serif text-5xl leading-[1.02] font-medium tracking-[-0.02em] text-balance md:text-6xl"
+				data-reveal
+				style="--delay: 80ms"
+			>
+				Your information, in plain language.
+			</h1>
+			<p class="font-ui mt-6 text-[13px] text-stone-500" data-reveal style="--delay: 160ms">Last updated {UPDATED}</p>
+		</div>
+
+		<article class="prose-udaan mt-14 max-w-2xl lg:mt-20" data-reveal>
+			<p>
+				Udaan Foundation is run by students, and we try to collect as little about you as possible. This page explains what
+				we collect, why, and what you can do about it.
+			</p>
+
+			<h2>Browsing this site</h2>
+			<p>
+				This website doesn't use cookies, analytics, or advertising trackers, and it doesn't load anything from other
+				companies' servers while you browse. Like any website, our hosting provider may keep basic technical logs (such as
+				IP addresses) for security and reliability.
+			</p>
+
+			<h2>Donations</h2>
+			<p>
+				Donations are handled by a third-party payment provider. When you give, the provider collects your payment details
+				under its own privacy policy, and shares with us the information we need to thank you and keep records, such as your
+				name, email address, and the amount you gave. We never see or store your full card details.
+			</p>
+
+			<h2>Applications from organizations</h2>
+			<p>
+				If you apply for funding, you'll fill in a form hosted by a third-party form provider. We use what you send, such as
+				contact details, information about your organization, and photos, only to review your application and, if we
+				partner, to tell your story with your permission.
+			</p>
+
+			<h2>When you email us</h2>
+			<p>We keep your messages so we can reply and follow up. We don't add you to any mailing list unless you ask.</p>
+
+			<h2>Photos of children</h2>
+			<p>
+				Photos on this site are shared with us by our partner organizations. We only publish photos of children when our
+				partners confirm that a parent or guardian has agreed. If you'd like a photo removed, contact us and we'll take it down.
+			</p>
+
+			<h2>What we never do</h2>
+			<p>We don't sell or rent personal information, and we don't share it with anyone except the services described above.</p>
+
+			<h2>Your choices</h2>
+			<p>
+				You can ask us what information we hold about you, or ask us to correct or delete it, at any time.
+				{
+					CONTACT_EMAIL ? (
+						<>
+							Email{' '}
+							<a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+							{' '}and we'll respond as soon as we can.
+						</>
+					) : (
+						<>Get in touch using the contact details on this site and we'll respond as soon as we can.</>
+					)
+				}
+			</p>
+
+			<h2>Changes</h2>
+			<p>If we change how we handle information, we'll update this page and the date at the top.</p>
+		</article>
+	</main>
+</Layout>

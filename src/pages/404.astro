@@ -1,0 +1,46 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Button from '../components/Button.astro';
+import BirdLogo from '../components/BirdLogo.astro';
+---
+
+<Layout title="Page not found · Udaan Foundation">
+	<main class="px-6 pt-16 pb-28 lg:px-12 lg:pt-28 lg:pb-40">
+		<div class="max-w-6xl">
+			<BirdLogo class="text-leaf bird-drift h-10 w-auto" />
+			<p class="font-ui mt-10 text-[11px] font-semibold tracking-[0.16em] text-stone-500 uppercase">404</p>
+			<h1
+				class="text-ink mt-3 max-w-3xl font-serif text-5xl leading-[1.02] font-medium tracking-[-0.02em] text-balance md:text-7xl"
+			>
+				This page has taken flight.
+			</h1>
+			<p class="mt-6 max-w-lg font-serif text-lg leading-snug text-stone-500 md:text-xl">
+				We couldn't find what you were looking for. It may have moved, or the link may be mistyped.
+			</p>
+			<div class="mt-9 flex flex-wrap gap-3">
+				<Button href="/" arrow>Back to home</Button>
+				<Button href="/partners" variant="secondary">Our partners</Button>
+			</div>
+		</div>
+	</main>
+</Layout>
+
+<style>
+	/* The bird drifts gently, as if hovering on a breeze */
+	@media (prefers-reduced-motion: no-preference) {
+		.bird-drift {
+			animation: drift 4s ease-in-out infinite;
+		}
+	}
+	@keyframes drift {
+		0%,
+		100% {
+			translate: 0 0;
+			rotate: 0deg;
+		}
+		50% {
+			translate: 0.75rem -0.5rem;
+			rotate: -6deg;
+		}
+	}
+</style>

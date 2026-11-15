@@ -1,6 +1,6 @@
 ---
-import { Image } from 'astro:assets';
 import Button from './Button.astro';
+import PressCard from './PressCard.astro';
 import press from '../assets/partners/gurukulam-press-dainik-jagran.jpg';
 
 // Facts below come from the Dainik Jagran Kanpur feature (7 July 2026) — confirm with Gurukulam before launch.
@@ -81,43 +81,21 @@ const stats = [
 				</dl>
 
 				<div class="mt-10 flex flex-wrap gap-3" data-reveal>
-					<Button href="#donate" arrow>Support Gurukulam</Button>
-					<Button href={press.src} variant="secondary" class="bg-white! hover:bg-stone-200!" target="_blank" rel="noopener">
-						Read the article
-					</Button>
+					<Button href="/donate" arrow>Support Gurukulam</Button>
+					<Button href="/partners/gurukulam" variant="secondary" class="bg-white! hover:bg-stone-200!">Read their story</Button>
 				</div>
 			</div>
 
-			<!-- Press: the clipping swings in and settles like a pinned cutting (fx-pin), then the headline reads along -->
-			<figure class="lg:col-span-5 lg:pt-6">
-				<a
-					href={press.src}
-					target="_blank"
-					rel="noopener"
-					class="fx-pin relative block bg-white p-2 shadow-[0_18px_40px_-12px_rgb(0_0_0/0.25)]"
-					aria-label="Open the full Dainik Jagran article"
-					data-scroll
-				>
-					<Image
-						src={press}
-						alt="Dainik Jagran Kanpur feature on Gurukulam, with a photo of founder Uddeshya Sachan surrounded by smiling children"
-						widths={[480, 978]}
-						sizes="(min-width: 1024px) 40vw, 100vw"
-						class="block h-auto w-full"
-					/>
-					<span class="font-ui bg-ink absolute -top-3 left-5 rounded-sm px-2 py-1 text-[10px] font-semibold tracking-[0.14em] text-white uppercase">
-						In the press
-					</span>
-				</a>
-				<figcaption class="border-leaf mt-10 border-l-2 pl-5">
-					<blockquote class="text-ink font-serif text-2xl leading-[1.2] italic md:text-[28px]" data-read-along>
-						“Breaking bad habits, instilling values, and spreading smiles.”
-					</blockquote>
-					<p class="font-ui mt-3 text-[12px] font-semibold text-stone-500">
-						Dainik Jagran, Kanpur · July 2026 <span class="font-normal">(headline, translated from Hindi)</span>
-					</p>
-				</figcaption>
-			</figure>
+			<!-- Press: the clipping swings in and settles (fx-pin), then the headline reads along — shared PressCard -->
+			<PressCard
+				image={press}
+				alt="Dainik Jagran Kanpur feature on Gurukulam, with a photo of founder Uddeshya Sachan surrounded by smiling children"
+				outlet="Dainik Jagran, Kanpur"
+				date="July 2026"
+				quote="Breaking bad habits, instilling values, and spreading smiles."
+				quoteNote="headline, translated from Hindi"
+				class="lg:col-span-5 lg:pt-6"
+			/>
 		</div>
 	</div>
 </section>

@@ -1,0 +1,171 @@
+---
+import { Image } from 'astro:assets';
+import Layout from '../layouts/Layout.astro';
+import Button from '../components/Button.astro';
+import { TEAM } from '../data/site';
+
+// Team members come from TEAM in src/data/site.ts. The layout picks itself:
+//   - nobody has a photo yet  -> a magazine-style masthead (big names, roles on the right, lines that draw in)
+//   - any photos added        -> the portrait grid (portraits develop from black-and-white into colour)
+// While TEAM is empty: dev shows labelled placeholder rows; the built site shows a short note instead.
+const hasPhotos = TEAM.some((member) => member.photo);
+const showPlaceholders = import.meta.env.DEV && TEAM.length === 0;
+const pad = (n: number) => String(n).padStart(2, '0');
+
+// Students first, then adult leadership under its own label (the heading says "The students behind Udaan")
+const ordered = [...TEAM.filter((m) => !m.adult), ...TEAM.filter((m) => m.adult)];
+const startsAdults = (list: { adult?: boolean }[], i: number) => Boolean(list[i]?.adult && !list[i - 1]?.adult);
+const ADULT_LABEL = 'Adult leadership';
+
+const initials = (name: string) =>
+	name
+		.split(/\s+/)
+		.map((part) => part[0])
+		.join('')
+		.slice(0, 2)
+		.toUpperCase();
+---
+
+<Layout title="Our team · Udaan Foundation" description="Meet the high school students who run Udaan Foundation.">
+	<main>
+		<section class="px-6 pt-12 lg:px-12 lg:pt-20">
+			<div class="max-w-6xl">
+				<p class="font-ui text-[11px] font-semibold tracking-[0.16em] text-stone-500 uppercase" data-reveal>Our team</p>
+				<h1
+					class="text-ink mt-3 max-w-3xl font-serif text-5xl leading-[1.02] font-medium tracking-[-0.02em] text-balance md:text-6xl lg:text-7xl"
+					data-reveal
+					style="--delay: 80ms"
+				>
+					The students behind Udaan.
+				</h1>
+				<p class="mt-6 max-w-xl font-serif text-lg leading-snug text-stone-500 md:text-xl" data-reveal style="--delay: 160ms">
+					We're high school students who believe the people already doing the work deserve the funding to keep doing it.
+					Here's who we are.
+				</p>
+			</div>
+		</section>
+
+		<section class="px-6 pt-16 pb-24 lg:px-12 lg:pt-24 lg:pb-36">
+			<!-- Portrait grid (photos): portraits develop from black-and-white into colour (fx-develop).
+			     Masthead (names only): one row per lead; each line draws across, then the name and role arrive. -->
+			<div class="max-w-6xl">
+				{
+					TEAM.length > 0 && hasPhotos ? (
+						<ul class="grid grid-cols-2 gap-x-5 gap-y-14 md:grid-cols-3 lg:grid-cols-4 lg:gap-x-8">
+							{ordered.map((member, i) => (
+								<>
+								{startsAdults(ordered, i) && (
+									<li class="font-ui col-span-full -mb-6 pt-6 text-[11px] font-semibold tracking-[0.16em] text-stone-500 uppercase" data-reveal>
+										{ADULT_LABEL}
+									</li>
+								)}
+								<li class="fx-develop" data-reveal style={`--delay: ${(i % 4) * 110}ms`}>
+									<div class="aspect-[4/5] overflow-hidden rounded-md bg-stone-100">
+										{member.photo ? (
+											<Image
+												src={member.photo}
+												alt={`Portrait of ${member.name}`}
+												widths={[320, 640]}
+												sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
+												class="h-full w-full object-cover"
+												style={`object-position: ${member.focus ?? '50% 30%'}`}
+											/>
+										) : (
+											<div class="flex h-full w-full items-center justify-center font-serif text-5xl text-stone-400">
+												{initials(member.name)}
+											</div>
+										)}
+									</div>
+									<p class="text-ink mt-4 font-serif text-2xl leading-tight">{member.name}</p>
+									<p class="font-ui mt-1 text-[11px] font-semibold tracking-[0.14em] uppercase">
+										<span class="text-leaf">{member.role}</span>
+										{member.grade && <span class="text-stone-400"> · {member.grade}</span>}
+									</p>
+									{member.bio && <p class="mt-3 font-serif text-[17px] leading-snug text-stone-600">{member.bio}</p>}
+								</li>
+								</>
+							))}
+						</ul>
+					) : TEAM.length > 0 || showPlaceholders ? (
+						<>
+							<ol class="relative" aria-hidden={showPlaceholders ? 'true' : undefined}>
+								{(TEAM.length > 0 ? ordered : [1, 2, 3, 4].map((n) => ({ name: `Team member ${n}`, role: 'Role', grade: undefined, adult: false }))).map((member, i, list) => (
+									<>
+									{startsAdults(list, i) && (
+										<li class="font-ui pt-14 pb-4 text-[11px] font-semibold tracking-[0.16em] text-stone-500 uppercase md:pt-16" data-reveal>
+											{ADULT_LABEL}
+										</li>
+									)}
+									<li class="relative grid grid-cols-[2.25rem_1fr] items-baseline gap-x-4 gap-y-2 py-7 md:grid-cols-[3rem_1fr_auto] md:gap-x-6 md:py-9">
+										<span
+											class="absolute inset-x-0 top-0 h-px bg-stone-200"
+											aria-hidden="true"
+											data-reveal="draw"
+											style={`--delay: ${i * 130}ms`}
+										/>
+										<span
+											class="font-ui text-[12px] font-semibold text-stone-400 tabular-nums"
+											data-reveal
+											style={`--delay: ${i * 130 + 120}ms`}
+										>
+											{pad(i + 1)}
+										</span>
+										<p
+											class:list={[
+												'font-serif text-4xl leading-[1.05] font-medium tracking-[-0.015em] md:text-6xl',
+												showPlaceholders ? 'text-stone-300' : 'text-ink',
+											]}
+											data-reveal
+											style={`--delay: ${i * 130 + 180}ms`}
+										>
+											{member.name}
+										</p>
+										<p
+											class="font-ui col-start-2 text-[11px] font-semibold tracking-[0.14em] uppercase md:col-start-auto md:text-right"
+											data-reveal
+											style={`--delay: ${i * 130 + 260}ms`}
+										>
+											<span class={showPlaceholders ? 'text-stone-300' : 'text-leaf'}>{member.role}</span>
+											{member.grade && <span class="text-stone-400"> · {member.grade}</span>}
+										</p>
+									</li>
+									</>
+								))}
+								<li class="relative h-px" aria-hidden="true">
+									<span
+										class="absolute inset-x-0 top-0 h-px bg-stone-200"
+										data-reveal="draw"
+										style={`--delay: ${(TEAM.length || 4) * 130}ms`}
+									/>
+								</li>
+							</ol>
+							{showPlaceholders && (
+								<p class="font-ui mt-10 text-[12px] text-stone-400">
+									Dev preview only: add people to <code>TEAM</code> in <code>src/data/site.ts</code>. The live site won't show these rows.
+								</p>
+							)}
+						</>
+					) : (
+						<p class="font-serif text-xl text-stone-500">Team profiles are on their way.</p>
+					)
+				}
+			</div>
+		</section>
+
+		<section class="px-6 pb-24 lg:px-12 lg:pb-36">
+			<div class="relative grid max-w-6xl items-end gap-8 pt-14 md:grid-cols-2">
+				<span class="absolute inset-x-0 top-0 h-px bg-stone-200" aria-hidden="true" data-reveal="draw"></span>
+				<h2
+					class="text-ink font-serif text-3xl leading-[1.1] font-medium tracking-[-0.01em] text-balance md:text-4xl"
+					data-reveal
+				>
+					Want to back what we're building?
+				</h2>
+				<div class="flex flex-wrap gap-3 md:justify-end" data-reveal style="--delay: 120ms">
+					<Button href="/donate" arrow>Donate</Button>
+					<Button href="/#how-it-works" variant="secondary">See how it works</Button>
+				</div>
+			</div>
+		</section>
+	</main>
+</Layout>

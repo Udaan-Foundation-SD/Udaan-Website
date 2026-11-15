@@ -1,0 +1,153 @@
+---
+import Layout from '../layouts/Layout.astro';
+import Button from '../components/Button.astro';
+import { APPLY_CRITERIA, APPLY_FORM_URL, CONTACT_EMAIL } from '../data/site';
+
+// "What we'll ask" and "What happens next" are drafts — the team should confirm they match their process.
+const asks = [
+	'Who you are, and the community you serve',
+	'What your organization does today, and for how long',
+	'What funding would let you do, as specifically as you can',
+	'A few photos of your work, and someone who can vouch for it',
+];
+
+const nextSteps = [
+	{ title: 'We read every application', body: 'Our team reviews what you send and follows up with any questions.' },
+	{ title: 'We get to know you', body: 'We talk with you, learn how you work, and verify your programs.' },
+	{ title: 'We start fundraising', body: "If it's a fit, we feature your work and start raising funds for the needs you've told us about." },
+];
+
+const pad = (n: number) => String(n).padStart(2, '0');
+---
+
+<Layout title="Apply for funding · Udaan Foundation" description="Grassroots organizations in India can apply to partner with Udaan Foundation.">
+	<main>
+		<section class="px-6 pt-12 lg:px-12 lg:pt-20">
+			<div class="max-w-6xl">
+				<p class="font-ui text-[11px] font-semibold tracking-[0.16em] text-stone-500 uppercase" data-reveal>For organizations</p>
+				<h1
+					class="text-ink mt-3 max-w-3xl font-serif text-5xl leading-[1.02] font-medium tracking-[-0.02em] text-balance md:text-6xl lg:text-7xl"
+					data-reveal
+					style="--delay: 80ms"
+				>
+					Apply for funding.
+				</h1>
+				<p class="font-devanagari mt-3 text-2xl text-stone-400 md:text-3xl" lang="hi" data-reveal style="--delay: 140ms">
+					फंडिंग के लिए आवेदन करें
+				</p>
+				<p class="mt-6 max-w-xl font-serif text-lg leading-snug text-stone-500 md:text-xl" data-reveal style="--delay: 200ms">
+					If you run a grassroots organization in India and funding is what holds you back, we'd like to hear from you.
+				</p>
+				<div class="mt-9 flex flex-wrap items-center gap-4" data-reveal style="--delay: 260ms">
+					{
+						APPLY_FORM_URL ? (
+							<Button href={APPLY_FORM_URL} arrow target="_blank" rel="noopener">
+								Start your application
+							</Button>
+						) : (
+							<p class="font-ui rounded-md bg-stone-100 px-4 py-2 text-[13.5px] font-semibold text-stone-600">
+								Our application form is opening soon.
+								{CONTACT_EMAIL && (
+									<>
+										{' '}
+										Until then, email{' '}
+										<a href={`mailto:${CONTACT_EMAIL}`} class="text-leaf underline underline-offset-4">
+											{CONTACT_EMAIL}
+										</a>
+										.
+									</>
+								)}
+							</p>
+						)
+					}
+				</div>
+			</div>
+		</section>
+
+		<!-- Who can apply: criteria rows draw in -->
+		<section class="px-6 pt-24 lg:px-12 lg:pt-36">
+			<div class="grid max-w-6xl gap-12 lg:grid-cols-12 lg:gap-10">
+				<div class="lg:col-span-5">
+					<p class="font-ui text-[11px] font-semibold tracking-[0.16em] text-stone-500 uppercase" data-reveal>Who can apply</p>
+					<h2
+						class="text-ink mt-3 font-serif text-4xl leading-[1.05] font-medium tracking-[-0.015em] text-balance md:text-5xl"
+						data-reveal
+						style="--delay: 80ms"
+					>
+						What we look for.
+					</h2>
+				</div>
+				<ol class="relative lg:col-span-6 lg:col-start-7">
+					{
+						APPLY_CRITERIA.map((item, i) => (
+							<li class="relative grid grid-cols-[2.5rem_1fr] gap-x-4 py-6">
+								<span class="absolute inset-x-0 top-0 h-px bg-stone-200" aria-hidden="true" data-reveal="draw" style={`--delay: ${i * 160}ms`} />
+								<span class="font-ui pt-1.5 text-[12px] font-semibold text-stone-400 tabular-nums">{pad(i + 1)}</span>
+								<div data-reveal style={`--delay: ${i * 160 + 180}ms`}>
+									<h3 class="text-ink font-serif text-2xl leading-tight font-medium">{item.title}</h3>
+									<p class="mt-1.5 font-serif text-lg leading-snug text-stone-600">{item.body}</p>
+								</div>
+							</li>
+						))
+					}
+					<li class="relative h-px" aria-hidden="true">
+						<span class="absolute inset-x-0 top-0 h-px bg-stone-200" data-reveal="draw" style={`--delay: ${APPLY_CRITERIA.length * 160}ms`} />
+					</li>
+				</ol>
+			</div>
+		</section>
+
+		<!-- What we'll ask: a light panel that widens into place -->
+		<section class="pt-24 lg:pt-36">
+			<div
+				class="mx-[calc(var(--inset-max)*var(--k,1))] rounded-[calc(8px+12px*var(--k,1))] bg-stone-100 px-6 py-16 [--inset-max:12px] md:px-12 lg:px-16 lg:py-20 lg:[--inset-max:48px]"
+				data-widen
+			>
+				<div class="grid max-w-6xl gap-12 lg:grid-cols-12 lg:gap-10">
+					<div class="lg:col-span-5">
+						<p class="font-ui text-[11px] font-semibold tracking-[0.16em] text-stone-500 uppercase" data-reveal>The application</p>
+						<h2
+							class="text-ink mt-3 font-serif text-4xl leading-[1.05] font-medium tracking-[-0.015em] text-balance md:text-5xl"
+							data-reveal
+							style="--delay: 80ms"
+						>
+							What we'll ask you.
+						</h2>
+						<p class="mt-5 max-w-sm font-serif text-lg leading-snug text-stone-600" data-reveal style="--delay: 160ms">
+							No polished proposals needed. Plain answers, in English or Hindi, are perfect.
+						</p>
+					</div>
+					<ul class="space-y-4 lg:col-span-6 lg:col-start-7">
+						{
+							asks.map((ask, i) => (
+								<li class="flex items-start gap-4 font-serif text-xl leading-snug text-stone-700" data-reveal style={`--delay: ${i * 110}ms`}>
+									<span class="bg-leaf mt-3 size-1.5 shrink-0 rounded-full" aria-hidden="true" />
+									{ask}
+								</li>
+							))
+						}
+					</ul>
+				</div>
+			</div>
+		</section>
+
+		<!-- What happens next -->
+		<section class="px-6 py-24 lg:px-12 lg:py-36">
+			<div class="max-w-6xl">
+				<p class="font-ui text-[11px] font-semibold tracking-[0.16em] text-stone-500 uppercase" data-reveal>What happens next</p>
+				<ol class="mt-8 grid gap-10 md:grid-cols-3 md:gap-8">
+					{
+						nextSteps.map((step, i) => (
+							<li class="relative pt-6" data-reveal style={`--delay: ${i * 150}ms`}>
+								<span class="absolute inset-x-0 top-0 h-px bg-stone-300" aria-hidden="true" data-reveal="draw" style={`--delay: ${i * 150}ms`} />
+								<span class="font-ui text-leaf text-[12px] font-semibold tabular-nums">{pad(i + 1)}</span>
+								<h3 class="text-ink mt-3 font-serif text-2xl leading-tight font-medium">{step.title}</h3>
+								<p class="mt-2 font-serif text-lg leading-snug text-stone-600">{step.body}</p>
+							</li>
+						))
+					}
+				</ol>
+			</div>
+		</section>
+	</main>
+</Layout>

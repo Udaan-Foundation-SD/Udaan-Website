@@ -1,13 +1,8 @@
 ---
 import Button from './Button.astro';
-import { APPLY_URL } from '../data/site';
+import { APPLY_CRITERIA as criteria } from '../data/site';
 
-// For grassroots organizations who want funding. Criteria mirror step 01 of "How it works".
-const criteria = [
-	{ title: 'Community-led', body: 'Run by people from the community it serves, who know its needs firsthand.' },
-	{ title: 'Real, visible work', body: 'Programs we can see and verify, through photos, references, or local coverage.' },
-	{ title: 'A clear need', body: 'A specific gap, from supplies to staff, that funding can directly fill.' },
-];
+// For grassroots organizations who want funding. Criteria are shared with /apply (src/data/site.ts).
 ---
 
 <section id="apply" class="px-6 pb-24 lg:px-12 lg:pb-36">
@@ -30,7 +25,7 @@ const criteria = [
 				us about your organization and what you need.
 			</p>
 			<div class="mt-8" data-reveal style="--delay: 400ms">
-				<Button href={APPLY_URL} arrow>Apply for funding</Button>
+				<Button href="/apply" arrow>Apply for funding</Button>
 			</div>
 		</div>
 
