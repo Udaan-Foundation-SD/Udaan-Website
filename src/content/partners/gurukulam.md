@@ -5,6 +5,8 @@ name: Gurukulam
 nameHi: गुरुकुलम
 location: Kanpur, Uttar Pradesh
 tagline: Free education for children from Kanpur's bastis
+seoTitle: Gurukulam, Kanpur
+seoDescription: Gurukulam gives around 150 children from Kanpur bastis a free education, with healthy snacks and cricket coaching. See why Udaan Foundation SD partners with it.
 summary: Started by Uddeshya Sachan, who once couldn't afford his own school fees, Gurukulam now gives around 150 children a free education, along with healthy snacks, cricket coaching, and a lot of belief.
 order: 1
 cover: ../../assets/partners/gurukulam-bicycles.jpg

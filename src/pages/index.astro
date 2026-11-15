@@ -7,9 +7,48 @@ import FeaturedPartner from '../components/FeaturedPartner.astro';
 import WhoWeAre from '../components/WhoWeAre.astro';
 import Donate from '../components/Donate.astro';
 import ForOrganizations from '../components/ForOrganizations.astro';
+import { CONTACT_EMAIL, ORG_MISSION, ORG_NAME, SOCIALS } from '../data/site';
+
+// Structured data (Schema.org JSON-LD) describing the organization and the site, for search engines.
+const site = (Astro.site ?? new URL('https://www.udaanfoundationsd.org')).href; // ends in "/"
+const sameAs = SOCIALS.map((social) => social.href);
+
+const schema = {
+	'@context': 'https://schema.org',
+	'@graph': [
+		{
+			'@type': 'NGO',
+			'@id': `${site}#organization`,
+			name: ORG_NAME,
+			alternateName: ['Udaan Foundation', 'Udaan'],
+			url: site,
+			logo: { '@type': 'ImageObject', url: `${site}logo.png`, width: 512, height: 512 },
+			image: `${site}og-image.jpg`,
+			description: ORG_MISSION,
+			areaServed: { '@type': 'Country', name: 'India' },
+			...(CONTACT_EMAIL && {
+				email: CONTACT_EMAIL,
+				contactPoint: { '@type': 'ContactPoint', contactType: 'general inquiries', email: CONTACT_EMAIL },
+			}),
+			...(sameAs.length > 0 && { sameAs }),
+		},
+		{
+			'@type': 'WebSite',
+			'@id': `${site}#website`,
+			url: site,
+			name: ORG_NAME,
+			inLanguage: 'en',
+			publisher: { '@id': `${site}#organization` },
+		},
+	],
+};
 ---
 
-<Layout>
+<Layout
+	title="Udaan Foundation SD | Funding Grassroots Work in India"
+	description="Udaan Foundation SD is a student-led nonprofit that vets grassroots organizations in India and raises the funds they need to support more children. Learn how."
+	schema={schema}
+>
 	<main>
 		<Hero />
 		<Showcase />

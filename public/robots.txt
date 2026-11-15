@@ -1,0 +1,5 @@
+# Udaan Foundation SD — all crawlers welcome
+User-agent: *
+Allow: /
+
+Sitemap: https://www.udaanfoundationsd.org/sitemap-index.xml

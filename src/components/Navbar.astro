@@ -6,8 +6,8 @@ import Button from './Button.astro';
 // Site-wide links (home sections use /#… so they work from any page)
 const links = [
 	{ label: 'How it works', href: '/#how-it-works' },
-	{ label: 'Our partners', href: '/partners' },
-	{ label: 'Team', href: '/team' },
+	{ label: 'Our partners', href: '/partners/' },
+	{ label: 'Team', href: '/team/' },
 	{ label: 'Get involved', href: '/#donate' },
 ];
 ---
@@ -18,7 +18,8 @@ const links = [
 		class="mx-auto flex max-w-full items-center justify-between rounded-xl border border-transparent px-6 py-5 transition-all duration-300 group-data-scrolled:mt-3 group-data-scrolled:max-w-5xl group-data-scrolled:border-stone-200 group-data-scrolled:bg-white/85 group-data-scrolled:py-3 group-data-scrolled:shadow-[0_1px_12px_rgb(0_0_0/0.04)] group-data-scrolled:backdrop-blur-md lg:px-12 lg:group-data-scrolled:px-6"
 	>
 		<div class="flex items-center gap-12">
-			<a href="/" class="text-ink block" aria-label="Udaan Foundation home">
+			<a href="/" class="text-ink block">
+				<span class="sr-only">Udaan Foundation SD home</span>
 				<Wordmark class="h-8 w-auto lg:h-9" title="" />
 			</a>
 
@@ -36,8 +37,8 @@ const links = [
 		</div>
 
 		<div class="flex items-center gap-2.5">
-			<Button href="/apply" variant="secondary" class="max-md:hidden">Apply for funding</Button>
-			<Button href="/donate" arrow class="max-sm:hidden">Donate</Button>
+			<Button href="/apply/" variant="secondary" class="max-md:hidden">Apply for funding</Button>
+			<Button href="/donate/" arrow class="max-sm:hidden">Donate</Button>
 
 			<button
 				type="button"
@@ -75,7 +76,8 @@ const links = [
 	</div>
 
 	<div class="relative flex items-center justify-between">
-		<a href="/" class="mm-item block text-white" style="--i: 0" aria-label="Udaan Foundation home">
+		<a href="/" class="mm-item block text-white" style="--i: 0">
+			<span class="sr-only">Udaan Foundation SD home</span>
 			<Wordmark class="h-8 w-auto" title="" />
 		</a>
 		<button
@@ -111,7 +113,7 @@ const links = [
 
 	<div class="mm-item relative mt-10 grid gap-3" style={`--i: ${links.length + 1}`}>
 		<a
-			href="/donate"
+			href="/donate/"
 			class="group font-ui text-ink flex items-center justify-center gap-2 rounded-md bg-white py-3 text-[14px] font-semibold transition-colors hover:bg-stone-200"
 		>
 			Donate
@@ -120,7 +122,7 @@ const links = [
 			</svg>
 		</a>
 		<a
-			href="/apply"
+			href="/apply/"
 			class="font-ui flex items-center justify-center rounded-md border border-white/25 py-3 text-[14px] font-semibold text-white transition-colors hover:border-white/60"
 		>
 			Apply for funding

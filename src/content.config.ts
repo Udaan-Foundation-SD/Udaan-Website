@@ -13,6 +13,8 @@ const partners = defineCollection({
 			location: z.string(),
 			tagline: z.string(),
 			summary: z.string(),
+			seoTitle: z.string().optional(), // e.g. "Gurukulam, Kanpur" ("| Udaan Foundation SD" is added)
+			seoDescription: z.string().optional(), // 150–160 characters for search results; falls back to summary
 			order: z.number().default(0), // lower numbers are listed first
 			cover: image(),
 			coverAlt: z.string(),

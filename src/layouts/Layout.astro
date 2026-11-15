@@ -2,22 +2,37 @@
 import '../styles/global.css';
 import Navbar from '../components/Navbar.astro';
 import Footer from '../components/Footer.astro';
+import { ORG_NAME } from '../data/site';
 
 interface Props {
-	title?: string;
-	description?: string;
+	/** Full page title, under 60 characters, e.g. "Donate | Udaan Foundation SD" */
+	title: string;
+	/** 150–160 characters: what a searcher sees under the title */
+	description: string;
+	/** Keep the page out of search results (used by the 404 page) */
+	noindex?: boolean;
+	/** Schema.org structured data for this page (rendered as JSON-LD) */
+	schema?: Record<string, unknown>;
+	ogType?: 'website' | 'article';
+	/** Share image path in public/ (defaults to the branded banyan card) */
+	image?: string;
+	imageAlt?: string;
 }
 
 const {
-	title = 'Udaan Foundation',
-	description = 'A student-led nonprofit raising funds for vetted grassroots organizations across India.',
+	title,
+	description,
+	noindex = false,
+	schema,
+	ogType = 'website',
+	image = '/og-image.jpg',
+	imageAlt = 'The Udaan wordmark over a banyan forest',
 } = Astro.props;
 
-// Share previews (WhatsApp, iMessage, Instagram, LinkedIn…) need absolute URLs, which come from `site` in astro.config.mjs.
-// Until a domain is set there, they fall back to relative paths.
-const absolute = (path: string) => (Astro.site ? new URL(path, Astro.site).href : path);
-const ogImage = absolute('/og-image.jpg');
-const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
+// Absolute URLs on the live domain (`site` in astro.config.mjs) — required for canonical links and share previews.
+const site = Astro.site ?? new URL('https://www.udaanfoundationsd.org');
+const canonical = new URL(Astro.url.pathname, site).href;
+const ogImage = new URL(image, site).href;
 ---
 
 <!doctype html>
@@ -25,9 +40,10 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : un
 	<head>
 		<meta charset="utf-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1" />
-		<meta name="description" content={description} />
 		<title>{title}</title>
-		{canonical && <link rel="canonical" href={canonical} />}
+		<meta name="description" content={description} />
+		{noindex ? <meta name="robots" content="noindex, follow" /> : <link rel="canonical" href={canonical} />}
+		<link rel="sitemap" href="/sitemap-index.xml" />
 
 		<!-- Icons: bird mark (SVG, adapts to dark tabs), PNG fallback, and the home-screen icon -->
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
@@ -35,17 +51,24 @@ const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : un
 		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 		<meta name="theme-color" content="#ffffff" />
 
-		<!-- Share previews -->
-		<meta property="og:type" content="website" />
-		<meta property="og:site_name" content="Udaan Foundation" />
+		<!-- Share previews (Open Graph + Twitter/X) -->
+		<meta property="og:type" content={ogType} />
+		<meta property="og:site_name" content={ORG_NAME} />
+		<meta property="og:locale" content="en_US" />
 		<meta property="og:title" content={title} />
 		<meta property="og:description" content={description} />
+		<meta property="og:url" content={canonical} />
 		<meta property="og:image" content={ogImage} />
 		<meta property="og:image:width" content="1200" />
 		<meta property="og:image:height" content="630" />
-		<meta property="og:image:alt" content="The Udaan wordmark over a banyan forest" />
-		{canonical && <meta property="og:url" content={canonical} />}
+		<meta property="og:image:alt" content={imageAlt} />
 		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={ogImage} />
+		<meta name="twitter:image:alt" content={imageAlt} />
+
+		{schema && <script type="application/ld+json" set:html={JSON.stringify(schema)} />}
 
 		<meta name="generator" content={Astro.generator} />
 		<!-- Turn on scroll motion before first paint, unless the visitor prefers reduced motion (see src/scripts/motion.ts) -->

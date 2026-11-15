@@ -1,14 +1,24 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
-
+import sitemap from '@astrojs/sitemap';
 import tailwindcss from '@tailwindcss/vite';
 
 // https://astro.build/config
 export default defineConfig({
-  // TODO: set this to the live domain once you have it (e.g. 'https://udaanfoundation.org').
-  // It makes share previews and canonical links use full URLs.
-  // site: 'https://your-domain.org',
-  vite: {
-    plugins: [tailwindcss()]
-  }
+	// The live address — used for canonical links, share previews, structured data, and the sitemap.
+	site: 'https://www.udaanfoundationsd.org',
+
+	// GitHub Pages serves each page from a folder (/donate/ → donate/index.html), so URLs end in a slash.
+	// Internal links use that exact form so nothing goes through a redirect.
+	trailingSlash: 'always',
+
+	integrations: [
+		sitemap({
+			filter: (page) => !page.includes('/404'),
+		}),
+	],
+
+	vite: {
+		plugins: [tailwindcss()],
+	},
 });

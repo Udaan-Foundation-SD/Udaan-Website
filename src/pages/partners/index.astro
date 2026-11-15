@@ -7,7 +7,10 @@ import Button from '../../components/Button.astro';
 const partners = (await getCollection('partners')).sort((a, b) => a.data.order - b.data.order);
 ---
 
-<Layout title="Our partners · Udaan Foundation" description="The grassroots organizations across India that Udaan vets and fundraises for.">
+<Layout
+	title="Our Partners | Udaan Foundation SD"
+	description="Meet the grassroots organizations Udaan Foundation SD vets and fundraises for, starting with Gurukulam, which gives children in Kanpur a free education."
+>
 	<main>
 		<section class="px-6 pt-12 lg:px-12 lg:pt-20">
 			<div class="max-w-6xl">
@@ -33,7 +36,7 @@ const partners = (await getCollection('partners')).sort((a, b) => a.data.order -
 					partners.map((partner, i) => (
 						<li>
 							<a
-								href={`/partners/${partner.id}`}
+								href={`/partners/${partner.id}/`}
 								class="group fx-develop grid items-center gap-8 md:grid-cols-12 md:gap-10"
 								data-reveal
 							>
@@ -41,6 +44,7 @@ const partners = (await getCollection('partners')).sort((a, b) => a.data.order -
 									<Image
 										src={partner.data.cover}
 										alt={partner.data.coverAlt}
+										loading={i === 0 ? 'eager' : 'lazy'}
 										widths={[640, 1024, 1400]}
 										sizes="(min-width: 768px) 58vw, 100vw"
 										class="aspect-[4/3] w-full object-cover transition-transform duration-700 group-hover:scale-[1.03]"
@@ -86,7 +90,7 @@ const partners = (await getCollection('partners')).sort((a, b) => a.data.order -
 					<p class="font-devanagari mt-2 text-xl text-stone-400" lang="hi">क्या आप एक ज़मीनी संस्था चलाते हैं?</p>
 				</div>
 				<div class="flex flex-wrap gap-3 md:justify-end" data-reveal style="--delay: 120ms">
-					<Button href="/apply" arrow>Apply for funding</Button>
+					<Button href="/apply/" arrow>Apply for funding</Button>
 				</div>
 			</div>
 		</section>

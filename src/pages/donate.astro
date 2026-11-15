@@ -34,7 +34,7 @@ const faq = [
 	...(live
 		? []
 		: [{ q: 'When can I donate?', a: 'Very soon. We are finishing setting up secure online giving. Please check back shortly.' }]),
-	{ q: 'Who runs Udaan?', a: 'A team of high school students, with an adult advisor.', link: { label: 'Meet the team', href: '/team' } },
+	{ q: 'Who runs Udaan?', a: 'A team of high school students, with an adult advisor.', link: { label: 'Meet the team', href: '/team/' } },
 	...(TAX_NOTE ? [{ q: 'Is my donation tax-deductible?', a: TAX_NOTE }] : []),
 	...(CONTACT_EMAIL
 		? [{ q: 'I have another question.', a: 'We would love to hear from you.', link: { label: CONTACT_EMAIL, href: `mailto:${CONTACT_EMAIL}` } }]
@@ -44,7 +44,10 @@ const faq = [
 const pad = (n: number) => String(n).padStart(2, '0');
 ---
 
-<Layout title="Donate · Udaan Foundation" description="Support vetted grassroots organizations across India, one-time or monthly.">
+<Layout
+	title="Donate | Udaan Foundation SD"
+	description="Support vetted grassroots organizations across India, one-time or monthly. Your gift through Udaan Foundation SD goes toward specific, real needs on the ground."
+>
 	<main>
 		<!-- Story on the left; the giving form in a dark "checkout card" on the right (a coming-soon preview until a checkout link is set) -->
 		<section class="px-6 pt-12 lg:px-12 lg:pt-20">
@@ -199,7 +202,7 @@ const pad = (n: number) => String(n).padStart(2, '0');
 					See who your gift supports.
 				</h2>
 				<div class="flex flex-wrap gap-3 md:justify-end" data-reveal style="--delay: 120ms">
-					<Button href="/partners" variant="secondary" arrow>Our partners</Button>
+					<Button href="/partners/" variant="secondary" arrow>Our partners</Button>
 				</div>
 			</div>
 		</section>

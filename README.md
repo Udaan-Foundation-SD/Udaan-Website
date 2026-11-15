@@ -24,7 +24,7 @@ Most day-to-day updates don't need any code — just these files:
 | Donation amounts, "what we look for" criteria | `src/data/site.ts` |
 | Partner organizations | one Markdown file each in `src/content/partners/` (copy `gurukulam.md`) |
 | Photos | `src/assets/` (partner photos in `src/assets/partners/`) |
-| Live domain (for share previews) | `site` in `astro.config.mjs` |
+| Live domain (canonical links, sitemap, share previews) | `site` in `astro.config.mjs` and `public/CNAME` |
 
 Anything left empty in `src/data/site.ts` is simply hidden on the site, so no placeholder text goes live.
 
@@ -43,9 +43,17 @@ Anything left empty in `src/data/site.ts` is simply hidden on the site, so no pl
 - **Shared pieces:** `Button`, `Wordmark`, `DonateForm`, `PressCard` in `src/components/`.
 - **Scroll motion:** add `data-reveal`, `data-read-along`, `data-count`, `data-scroll`, or `data-widen` to elements — see `src/scripts/motion.ts`. Everything is skipped for visitors who prefer reduced motion.
 
-## Before launch / still to do
+## Deploying (GitHub Pages)
 
-- Set `site` in `astro.config.mjs` to the real domain.
+The site is published to **https://www.udaanfoundationsd.org** by GitHub Actions (`.github/workflows/deploy.yml`): every push to `main` builds the site and publishes `dist/`.
+
+- `public/CNAME` holds the custom domain; `public/robots.txt` points crawlers to `/sitemap-index.xml` (generated at build time by `@astrojs/sitemap`).
+- URLs end in a slash (`/donate/`), matching how GitHub Pages serves folders — keep internal links in that form.
+- Every page passes its own `title` (under 60 characters) and `description` (150–160 characters) to `Layout`; canonical, Open Graph, and Twitter tags are generated from them. The home page also carries Schema.org `NGO` structured data.
+
+## Still to do
+
 - Add `DONATE_CHECKOUT_URL` (Givebutter) and `APPLY_FORM_URL` when ready.
-- Add a public `CONTACT_EMAIL`, and the fiscal sponsor's legal line (`LEGAL_NOTE`, `TAX_NOTE`) once confirmed.
+- Add the fiscal sponsor's legal line (`LEGAL_NOTE`, `TAX_NOTE`) once confirmed, and social links (`SOCIALS`) — they also flow into the structured data.
 - Confirm partner facts and process copy, and parent/guardian consent for photos of children.
+- Upgrade Node.js to 22.23.4+ and then Astro (`npm install astro@latest`) to pick up security fixes.

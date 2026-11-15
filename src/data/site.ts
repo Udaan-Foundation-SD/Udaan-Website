@@ -12,6 +12,13 @@ export type TeamMember = {
 	adult?: boolean; // adult leadership — listed after the students, under its own label
 };
 
+/** Official name, as search engines and link previews should show it. */
+export const ORG_NAME = 'Udaan Foundation SD';
+
+/** One-sentence mission, used in structured data for search engines. */
+export const ORG_MISSION =
+	"Udaan Foundation is a student-led nonprofit that vets grassroots organizations across India and raises the funds they can't reach on their own, so more children get the support they need.";
+
 /** Public contact email, e.g. 'hello@yourdomain.org'. Shown in the footer, privacy page, and apply page when set. */
 export const CONTACT_EMAIL = 'udaanfoundation.admin@gmail.com';
 

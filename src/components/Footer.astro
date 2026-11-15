@@ -1,18 +1,18 @@
 ---
 import Wordmark from './Wordmark.astro';
 import Button from './Button.astro';
-import { CONTACT_EMAIL, LEGAL_NOTE, SOCIALS } from '../data/site';
+import { CONTACT_EMAIL, LEGAL_NOTE, ORG_NAME, SOCIALS } from '../data/site';
 
 const explore = [
 	{ label: 'How it works', href: '/#how-it-works' },
-	{ label: 'Our partners', href: '/partners' },
+	{ label: 'Our partners', href: '/partners/' },
 	{ label: 'Who we are', href: '/#who-we-are' },
-	{ label: 'Team', href: '/team' },
+	{ label: 'Team', href: '/team/' },
 ];
 
 const involved = [
-	{ label: 'Donate', href: '/donate' },
-	{ label: 'Apply for funding', href: '/apply' },
+	{ label: 'Donate', href: '/donate/' },
+	{ label: 'Apply for funding', href: '/apply/' },
 	...(CONTACT_EMAIL ? [{ label: CONTACT_EMAIL, href: `mailto:${CONTACT_EMAIL}` }] : []),
 ];
 
@@ -23,7 +23,8 @@ const year = new Date().getFullYear();
 	<div class="mx-auto max-w-6xl">
 		<div class="grid gap-12 md:grid-cols-12">
 			<div class="md:col-span-5">
-				<a href="/" class="text-ink inline-block" aria-label="Udaan Foundation home">
+				<a href="/" class="text-ink inline-block">
+					<span class="sr-only">Udaan Foundation SD home</span>
 					<Wordmark class="h-11 w-auto" title="" />
 				</a>
 				<p class="mt-2 text-sm text-stone-400">
@@ -33,7 +34,7 @@ const year = new Date().getFullYear();
 				<p class="mt-5 max-w-sm font-serif text-lg leading-snug text-stone-600">
 					A student-led nonprofit raising funds for vetted grassroots organizations across India.
 				</p>
-				<Button href="/donate" arrow class="mt-6">Donate</Button>
+				<Button href="/donate/" arrow class="mt-6">Donate</Button>
 			</div>
 
 			<nav class="grid grid-cols-2 gap-8 md:col-span-6 md:col-start-7" aria-label="Footer">
@@ -79,10 +80,10 @@ const year = new Date().getFullYear();
 
 		<div class="font-ui mt-14 flex flex-col gap-2 border-t border-stone-200 pt-6 text-[12px] text-stone-500 md:flex-row md:justify-between">
 			<p>
-				© {year} Udaan Foundation{LEGAL_NOTE && <span class="block md:inline md:before:content-['_·_']">{LEGAL_NOTE}</span>}
+				© {year} {ORG_NAME}{LEGAL_NOTE && <span class="block md:inline md:before:content-['_·_']">{LEGAL_NOTE}</span>}
 			</p>
 			<p>
-				Photos courtesy of our partners · <a href="/privacy" class="hover:text-ink underline-offset-4 hover:underline">Privacy</a>
+				Photos courtesy of our partners · <a href="/privacy/" class="hover:text-ink underline-offset-4 hover:underline">Privacy</a>
 			</p>
 		</div>
 	</div>

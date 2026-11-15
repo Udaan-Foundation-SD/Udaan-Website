@@ -4,6 +4,7 @@ import { getCollection, render } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import Button from '../../components/Button.astro';
 import PressCard from '../../components/PressCard.astro';
+import { ORG_NAME } from '../../data/site';
 
 export async function getStaticPaths() {
 	const partners = await getCollection('partners');
@@ -25,13 +26,13 @@ const placements = [
 ];
 ---
 
-<Layout title={`${p.name} · Udaan Foundation`} description={p.summary}>
+<Layout title={`${p.seoTitle ?? p.name} | ${ORG_NAME}`} description={p.seoDescription ?? p.summary} ogType="article">
 	<main>
 		<!-- Header -->
 		<section class="px-6 pt-10 lg:px-12 lg:pt-16">
 			<div class="max-w-6xl">
 				<nav class="font-ui text-[13px] text-stone-500" aria-label="Breadcrumb" data-reveal>
-					<a href="/partners" class="hover:text-ink transition-colors">Partners</a>
+					<a href="/partners/" class="hover:text-ink transition-colors">Partners</a>
 					<span class="mx-2 text-stone-300" aria-hidden="true">/</span>
 					<span class="text-ink">{p.name}</span>
 				</nav>
@@ -194,10 +195,10 @@ const placements = [
 						</h2>
 					</div>
 					<div class="flex flex-wrap gap-3 md:justify-end" data-reveal style="--delay: 120ms">
-						<Button href="/donate" variant="secondary" arrow class="bg-white! hover:bg-stone-200!">
+						<Button href="/donate/" variant="secondary" arrow class="bg-white! hover:bg-stone-200!">
 							Donate
 						</Button>
-						<a href="/partners" class="font-ui inline-flex items-center px-3 text-[13.5px] font-semibold text-white/80 hover:text-white">
+						<a href="/partners/" class="font-ui inline-flex items-center px-3 text-[13.5px] font-semibold text-white/80 hover:text-white">
 							All partners
 						</a>
 					</div>

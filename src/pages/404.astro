@@ -4,7 +4,11 @@ import Button from '../components/Button.astro';
 import BirdLogo from '../components/BirdLogo.astro';
 ---
 
-<Layout title="Page not found · Udaan Foundation">
+<Layout
+	title="Page Not Found | Udaan Foundation SD"
+	description="This page could not be found. Visit the Udaan Foundation SD home page to learn how we fund vetted grassroots organizations supporting children across India."
+	noindex
+>
 	<main class="px-6 pt-16 pb-28 lg:px-12 lg:pt-28 lg:pb-40">
 		<div class="max-w-6xl">
 			<BirdLogo class="text-leaf bird-drift h-10 w-auto" />
@@ -19,7 +23,7 @@ import BirdLogo from '../components/BirdLogo.astro';
 			</p>
 			<div class="mt-9 flex flex-wrap gap-3">
 				<Button href="/" arrow>Back to home</Button>
-				<Button href="/partners" variant="secondary">Our partners</Button>
+				<Button href="/partners/" variant="secondary">Our partners</Button>
 			</div>
 		</div>
 	</main>
