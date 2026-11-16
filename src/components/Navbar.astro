@@ -10,6 +10,37 @@ const links = [
 	{ label: 'Team', href: '/team/' },
 	{ label: 'Get involved', href: '/#donate' },
 ];
+
+// The page you're on (section links on the home page never count as "current")
+const path = Astro.url.pathname;
+const isCurrent = (href: string) => !href.includes('#') && path.startsWith(href);
+const pad = (n: number) => String(n).padStart(2, '0');
+
+// A hand-drawn underline: uneven bumps that drift slightly upward, like a quick pen stroke.
+// Seeded by the label, so each link always gets the same stroke (no change between builds).
+const handDrawn = (label: string) => {
+	const w = Math.round(label.length * 7.4) + 6; // ≈ label width at 14.5px Manrope, plus a little overshoot
+	let seed = [...label].reduce((s, c) => (s * 31 + c.charCodeAt(0)) >>> 0, 7);
+	const rand = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 2 ** 32;
+	const pts: [number, number][] = [];
+	for (let x = 0, i = 0; x < w - 4; i++) {
+		const baseline = 3.9 - 1.5 * (x / w); // starts low, ends a touch higher
+		const bump = 0.35 + rand() * 0.85;
+		pts.push([x, baseline + (i % 2 ? bump : -bump)]);
+		x += 7 + rand() * 7;
+	}
+	pts.push([w, 2.3 + (rand() - 0.5) * 0.5]);
+	// Smooth curve through the points (Catmull-Rom → cubic Bézier)
+	const f = (n: number) => n.toFixed(2);
+	let d = `M${f(pts[0][0])} ${f(pts[0][1])}`;
+	for (let k = 0; k < pts.length - 1; k++) {
+		const [p0, p1, p2, p3] = [pts[k - 1] ?? pts[k], pts[k], pts[k + 1], pts[k + 2] ?? pts[k + 1]];
+		const c1 = [p1[0] + (p2[0] - p0[0]) / 6, p1[1] + (p2[1] - p0[1]) / 6];
+		const c2 = [p2[0] - (p3[0] - p1[0]) / 6, p2[1] - (p3[1] - p1[1]) / 6];
+		d += ` C${f(c1[0])} ${f(c1[1])} ${f(c2[0])} ${f(c2[1])} ${f(p2[0])} ${f(p2[1])}`;
+	}
+	return { w, d };
+};
 ---
 
 <!-- Full-width at the top; shrinks into a floating bordered card once the page scrolls (data-scrolled).
@@ -18,21 +49,53 @@ const links = [
 	<div
 		class="mx-auto flex max-w-full items-center justify-between rounded-xl border border-transparent px-6 py-5 transition-all duration-300 group-data-scrolled:max-w-5xl group-data-scrolled:border-stone-200 group-data-scrolled:bg-white/85 group-data-scrolled:py-3 group-data-scrolled:shadow-[0_1px_12px_rgb(0_0_0/0.04)] group-data-scrolled:backdrop-blur-md lg:px-12 lg:group-data-scrolled:px-6"
 	>
-		<div class="flex items-center gap-12">
+		<div class="flex items-center gap-6 xl:gap-9">
 			<a href="/" class="text-ink block">
 				<span class="sr-only">Udaan Foundation SD home</span>
 				<Wordmark class="h-8 w-auto lg:h-9" title="" />
 			</a>
 
-			<ul class="hidden items-center gap-8 text-[15px] text-stone-600 lg:flex">
+			<!-- Desktop links echo the phone menu: numbered, and on hover a wavy green underline draws in -->
+			<span class="hidden h-5 w-px bg-stone-200 lg:block" aria-hidden="true"></span>
+			<ul class="hidden items-center gap-5 lg:flex xl:gap-7">
 				{
-					links.map(({ label, href }) => (
-						<li>
-							<a href={href} class="hover:text-ink transition-colors">
-								{label}
-							</a>
-						</li>
-					))
+					links.map(({ label, href }, i) => {
+						const current = isCurrent(href);
+						const wave = handDrawn(label);
+						return (
+							<li>
+								<a
+									href={href}
+									class:list={[
+										'nav-link group/link relative flex items-start gap-1 py-1 text-[14.5px] transition-colors duration-300',
+										current ? 'text-ink' : 'hover:text-leaf text-stone-600',
+									]}
+									aria-current={current ? 'page' : undefined}
+								>
+									<span class="relative leading-6 whitespace-nowrap">
+										{label}
+										<svg
+											class="nav-squiggle text-leaf pointer-events-none absolute bottom-0 -left-0.5 h-1.5 w-[calc(100%+6px)] overflow-visible"
+											viewBox={`0 0 ${wave.w} 6`}
+											preserveAspectRatio="none"
+											aria-hidden="true"
+										>
+											<path d={wave.d} fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" pathLength="1" />
+										</svg>
+									</span>
+									<span
+										class:list={[
+											'group-hover/link:text-leaf mt-0.5 text-[9.5px] font-semibold tracking-[0.08em] tabular-nums transition-colors',
+											current ? 'text-leaf' : 'text-stone-400',
+										]}
+										aria-hidden="true"
+									>
+										{pad(i + 1)}
+									</span>
+								</a>
+							</li>
+						);
+					})
 				}
 			</ul>
 		</div>
@@ -136,6 +199,23 @@ const links = [
 </div>
 
 <style>
+	/* Desktop links: the wavy underline draws in from the left on hover, and stays drawn on the current page */
+	.nav-squiggle path {
+		stroke-dasharray: 1 1;
+		stroke-dashoffset: 1;
+	}
+	.nav-link:hover .nav-squiggle path,
+	.nav-link:focus-visible .nav-squiggle path,
+	.nav-link[aria-current='page'] .nav-squiggle path {
+		stroke-dashoffset: 0;
+	}
+	@media (prefers-reduced-motion: no-preference) {
+		.nav-squiggle path {
+			/* quick in the middle, easing off at the end, like a pen stroke */
+			transition: stroke-dashoffset 0.65s cubic-bezier(0.5, 0.05, 0.2, 1);
+		}
+	}
+
 	/* Closed: a zero-size circle at the menu button. Open: a circle big enough to cover the screen. */
 	.mobile-menu {
 		clip-path: circle(0px at var(--mx, calc(100% - 2.6rem)) var(--my, 2.6rem));
