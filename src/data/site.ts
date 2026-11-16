@@ -40,7 +40,7 @@ export const TAX_NOTE = '';
 
 /** Social links shown in the footer when set. */
 export const SOCIALS: { label: string; href: string }[] = [
-	// { label: 'Instagram', href: 'https://instagram.com/…' },
+	{ label: 'Instagram', href: 'https://www.instagram.com/udaanfoundationsd/' },
 ];
 
 /**
