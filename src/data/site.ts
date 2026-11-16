@@ -30,7 +30,7 @@ export const CONTACT_EMAIL = 'udaanfoundation.admin@gmail.com';
 export const DONATE_CHECKOUT_URL = '';
 
 /** Application form for organizations (Google Form, Tally…). The /apply page links to it when set. */
-export const APPLY_FORM_URL = '';
+export const APPLY_FORM_URL = 'https://tally.so/r/9NZqV4';
 
 /** Legal / registration line for the footer, e.g. 'Udaan Foundation is a registered 501(c)(3) nonprofit. EIN 00-0000000.' */
 export const LEGAL_NOTE = '';
