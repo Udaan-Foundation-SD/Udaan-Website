@@ -17,7 +17,7 @@ export const ORG_NAME = 'Udaan Foundation SD';
 
 /** One-sentence mission, used in structured data for search engines. */
 export const ORG_MISSION =
-	"Udaan Foundation is a student-led nonprofit that vets grassroots organizations across India and raises the funds they can't reach on their own, so more children get the support they need.";
+	"Udaan Foundation is a San Diego student-led nonprofit that vets grassroots organizations across India and raises the funds they can't reach on their own, so more children get the support they need.";
 
 /** Public contact email, e.g. 'hello@yourdomain.org'. Shown in the footer, privacy page, and apply page when set. */
 export const CONTACT_EMAIL = 'udaanfoundation.admin@gmail.com';
@@ -37,6 +37,13 @@ export const LEGAL_NOTE = '';
 
 /** Answer to "Is my donation tax-deductible?" on /donate. The question only appears once this is set. */
 export const TAX_NOTE = '';
+
+/**
+ * GoatCounter site code — the "yourcode" in yourcode.goatcounter.com (free account at goatcounter.com).
+ * When set, the live site counts visits with GoatCounter (no cookies, no personal data) and the privacy page says so.
+ * Leave empty to turn analytics off.
+ */
+export const GOATCOUNTER_CODE = '';
 
 /** Social links shown in the footer when set. */
 export const SOCIALS: { label: string; href: string }[] = [

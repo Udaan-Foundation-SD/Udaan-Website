@@ -20,12 +20,14 @@ const schema = {
 			'@type': 'NGO',
 			'@id': `${site}#organization`,
 			name: ORG_NAME,
-			alternateName: ['Udaan Foundation', 'Udaan'],
+			alternateName: ['Udaan Foundation', 'Udaan Foundation San Diego', 'Udaan'],
 			url: site,
 			logo: { '@type': 'ImageObject', url: `${site}logo.png`, width: 512, height: 512 },
 			image: `${site}og-image.jpg`,
 			description: ORG_MISSION,
 			areaServed: { '@type': 'Country', name: 'India' },
+			// Where we are (the "SD" in the name). City-level only: no street address is published.
+			address: { '@type': 'PostalAddress', addressLocality: 'San Diego', addressRegion: 'CA', addressCountry: 'US' },
 			...(CONTACT_EMAIL && {
 				email: CONTACT_EMAIL,
 				contactPoint: { '@type': 'ContactPoint', contactType: 'general inquiries', email: CONTACT_EMAIL },
@@ -46,7 +48,7 @@ const schema = {
 
 <Layout
 	title="Udaan Foundation SD | Funding Grassroots Work in India"
-	description="Udaan Foundation SD is a student-led nonprofit that vets grassroots organizations in India and raises the funds they need to support more children. Learn how."
+	description="Udaan Foundation SD is a San Diego student-led nonprofit that vets grassroots organizations in India and raises the funds they need to support more children."
 	schema={schema}
 >
 	<main>

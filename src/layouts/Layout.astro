@@ -2,7 +2,7 @@
 import '../styles/global.css';
 import Navbar from '../components/Navbar.astro';
 import Footer from '../components/Footer.astro';
-import { ORG_NAME } from '../data/site';
+import { GOATCOUNTER_CODE, ORG_NAME } from '../data/site';
 
 interface Props {
 	/** Full page title, under 60 characters, e.g. "Donate | Udaan Foundation SD" */
@@ -69,6 +69,18 @@ const ogImage = new URL(image, site).href;
 		<meta name="twitter:image:alt" content={imageAlt} />
 
 		{schema && <script type="application/ld+json" set:html={JSON.stringify(schema)} />}
+
+		<!-- Privacy-friendly visit counts (GoatCounter: no cookies, no personal data). Live site only, so local previews aren't counted. -->
+		{
+			import.meta.env.PROD && GOATCOUNTER_CODE && (
+				<script
+					is:inline
+					async
+					data-goatcounter={`https://${GOATCOUNTER_CODE}.goatcounter.com/count`}
+					src="https://gc.zgo.at/count.js"
+				/>
+			)
+		}
 
 		<meta name="generator" content={Astro.generator} />
 		<!-- Turn on scroll motion before first paint, unless the visitor prefers reduced motion (see src/scripts/motion.ts) -->

@@ -34,7 +34,7 @@ const faq = [
 	...(live
 		? []
 		: [{ q: 'When can I donate?', a: 'Very soon. We are finishing setting up secure online giving. Please check back shortly.' }]),
-	{ q: 'Who runs Udaan?', a: 'A team of high school students, with an adult advisor.', link: { label: 'Meet the team', href: '/team/' } },
+	{ q: 'Who runs Udaan?', a: 'A team of high school students at Canyon Crest Academy in San Diego, California, with an adult advisor.', link: { label: 'Meet the team', href: '/team/' } },
 	...(TAX_NOTE ? [{ q: 'Is my donation tax-deductible?', a: TAX_NOTE }] : []),
 	...(CONTACT_EMAIL
 		? [{ q: 'I have another question.', a: 'We would love to hear from you.', link: { label: CONTACT_EMAIL, href: `mailto:${CONTACT_EMAIL}` } }]

@@ -1,16 +1,18 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { CONTACT_EMAIL } from '../data/site';
+import { CONTACT_EMAIL, GOATCOUNTER_CODE } from '../data/site';
 
 // DRAFT privacy notice in plain language, written to match what this site actually does today
-// (no cookies, no analytics, no third-party scripts; fonts and images are self-hosted).
+// (no cookies or ad trackers; fonts and images are self-hosted). When GOATCOUNTER_CODE is set, the "Browsing"
+// section switches to describe GoatCounter's cookie-free visit counting.
 // Not legal advice — have it reviewed, and update it when you add a payment provider, form tool, or analytics.
-const UPDATED = '12 November 2026';
+const UPDATED = '15 November 2026';
+const analytics = Boolean(GOATCOUNTER_CODE);
 ---
 
 <Layout
 	title="Privacy Policy | Udaan Foundation SD"
-	description="How Udaan Foundation SD handles personal information: no tracking cookies or analytics, how donations and applications are processed, and how to reach us."
+	description="How Udaan Foundation SD handles your information: no tracking cookies or ads, how donations and applications are processed, and how to contact us anytime."
 >
 	<main class="px-6 pt-12 pb-24 lg:px-12 lg:pt-20 lg:pb-36">
 		<div class="max-w-6xl">
@@ -32,11 +34,23 @@ const UPDATED = '12 November 2026';
 			</p>
 
 			<h2>Browsing this site</h2>
-			<p>
-				This website doesn't use cookies, analytics, or advertising trackers, and it doesn't load anything from other
-				companies' servers while you browse. Like any website, our hosting provider may keep basic technical logs (such as
-				IP addresses) for security and reliability.
-			</p>
+			{
+				analytics ? (
+					<p>
+						This website doesn't use cookies or advertising trackers. To understand how many people visit and which pages are
+						useful, we count visits with GoatCounter, a privacy-friendly analytics service. It records things like the page you
+						viewed, the site that linked you here, your browser type, screen size, and country, but it doesn't use cookies,
+						doesn't store your IP address, and can't identify you personally. Like any website, our hosting provider may also
+						keep basic technical logs (such as IP addresses) for security and reliability.
+					</p>
+				) : (
+					<p>
+						This website doesn't use cookies, analytics, or advertising trackers, and it doesn't load anything from other
+						companies' servers while you browse. Like any website, our hosting provider may keep basic technical logs (such as
+						IP addresses) for security and reliability.
+					</p>
+				)
+			}
 
 			<h2>Donations</h2>
 			<p>

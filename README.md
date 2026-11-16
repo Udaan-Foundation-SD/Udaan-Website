@@ -19,7 +19,7 @@ Most day-to-day updates don't need any code — just these files:
 
 | What | Where |
 |---|---|
-| Contact email, donation checkout link (e.g. Givebutter), application form link, legal / tax lines, social links | `src/data/site.ts` |
+| Contact email, donation checkout link (e.g. Givebutter), application form link, legal / tax lines, social links, analytics code | `src/data/site.ts` |
 | Team members (names, roles, grade, photos) | `TEAM` in `src/data/site.ts` |
 | Donation amounts, "what we look for" criteria | `src/data/site.ts` |
 | Partner organizations | one Markdown file each in `src/content/partners/` (copy `gurukulam.md`) |
@@ -31,6 +31,7 @@ Anything left empty in `src/data/site.ts` is simply hidden on the site, so no pl
 - **Team page:** names and roles only shows a masthead list; once anyone has a photo it switches to a portrait grid.
 - **Donate page:** shows a "Donations opening soon" preview until `DONATE_CHECKOUT_URL` is set.
 - **Apply page:** shows "Our application form is opening soon" until `APPLY_FORM_URL` is set.
+- **Analytics:** set `GOATCOUNTER_CODE` to your GoatCounter site code (the `yourcode` in `yourcode.goatcounter.com`) to count visits. It has no cookies and collects no personal data. It only runs on the live site, not on `npm run dev`. The privacy page automatically switches to wording that describes it.
 
 ## Pages
 
