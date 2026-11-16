@@ -12,10 +12,11 @@ const links = [
 ];
 ---
 
-<!-- Full-width at the top; shrinks into a floating bordered card once the page scrolls (data-scrolled) -->
-<header class="group font-ui sticky top-0 z-30 transition-[padding] duration-300 data-scrolled:px-3" data-site-header>
+<!-- Full-width at the top; shrinks into a floating bordered card once the page scrolls (data-scrolled).
+     The gap above the card is padding on the sticky header (a margin on the card would collapse and touch the top). -->
+<header class="group font-ui sticky top-0 z-30 transition-[padding] duration-300 data-scrolled:px-3 data-scrolled:pt-2" data-site-header>
 	<div
-		class="mx-auto flex max-w-full items-center justify-between rounded-xl border border-transparent px-6 py-5 transition-all duration-300 group-data-scrolled:mt-3 group-data-scrolled:max-w-5xl group-data-scrolled:border-stone-200 group-data-scrolled:bg-white/85 group-data-scrolled:py-3 group-data-scrolled:shadow-[0_1px_12px_rgb(0_0_0/0.04)] group-data-scrolled:backdrop-blur-md lg:px-12 lg:group-data-scrolled:px-6"
+		class="mx-auto flex max-w-full items-center justify-between rounded-xl border border-transparent px-6 py-5 transition-all duration-300 group-data-scrolled:max-w-5xl group-data-scrolled:border-stone-200 group-data-scrolled:bg-white/85 group-data-scrolled:py-3 group-data-scrolled:shadow-[0_1px_12px_rgb(0_0_0/0.04)] group-data-scrolled:backdrop-blur-md lg:px-12 lg:group-data-scrolled:px-6"
 	>
 		<div class="flex items-center gap-12">
 			<a href="/" class="text-ink block">
