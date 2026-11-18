@@ -60,7 +60,7 @@ export const SOCIALS: { label: string; href: string }[] = [
  */
 export const TEAM: TeamMember[] = [
 	{ name: 'Ennishka T.', role: 'Partnerships Lead', group: 'Team leads', color: '#ff4d9d' },
-	{ name: 'Ishan K.', role: 'Finance & Tech Lead', group: 'Team leads', color: '#1fc463', photo: ishanPhoto },
+	{ name: 'Ishan K.', role: 'Finance & Tech Lead', group: 'Team leads', color: '#1fc463', photo: ishanPhoto, bio: "I joined to put my tech skills to work helping a nonprofit grow, starting with the site you're reading now." },
 	{ name: 'Rohan S.', role: 'Fundraising Lead', group: 'Team leads', color: '#3b6cff', photo: rohanPhoto, bio: 'Life Scout working toward Eagle Scout; plays piano and French horn.' },
 	{ name: 'Samia Z.', role: 'Marketing Lead', group: 'Team leads', color: '#ff7a1a' },
 

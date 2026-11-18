@@ -100,56 +100,58 @@ const initials = (name: string) =>
 								<ul
 									class:list={[
 										'grid gap-x-6 md:gap-x-8 lg:col-span-9',
-										// Leads get bigger profiles, two to a row (one on phones); everyone else sits three across (two on phones)
-										group.members.some(isLead) ? 'grid-cols-1 gap-y-9 sm:grid-cols-2 md:gap-y-12' : 'grid-cols-2 gap-y-9 md:grid-cols-3',
+										// Same three-column grid for every row; the leads row is one column on phones so titles have room beside the headshots
+										group.members.some(isLead) ? 'grid-cols-1 gap-y-8 sm:grid-cols-2 md:grid-cols-3 md:gap-y-9' : 'grid-cols-2 gap-y-9 md:grid-cols-3',
 									]}
 								>
-									{group.members.map((member, i) => {
-										const lead = isLead(member);
-										return (
-											<li class:list={['flex items-start', lead ? 'gap-4 md:gap-5' : 'gap-3.5']} data-reveal style={`--delay: ${80 + i * 60}ms`}>
-												{/* Leads get a round headshot (a cut-out on their own bright colour); without a photo,
-												    their initials sit on that colour instead, so names still line up */}
-												{lead && (
-													<span
-														class:list={[
-															'relative size-16 shrink-0 overflow-hidden rounded-full md:size-[4.5rem]',
-															member.color ? 'ring-1 ring-black/5' : 'bg-stone-100 ring-1 ring-stone-200',
-														]}
-														style={member.color ? `background-color: ${member.color}` : undefined}
-													>
-														{member.photo ? (
-															<Image src={member.photo} alt="" widths={[72, 144, 216]} sizes="72px" class="h-full w-full object-cover" />
-														) : (
-															<span
-																class:list={[
-																	'font-ui flex h-full w-full items-center justify-center text-[15px] font-semibold tracking-wide',
-																	member.color ? 'text-white' : 'text-stone-400',
-																]}
-																aria-hidden="true"
-															>
-																{initials(member.name)}
-															</span>
-														)}
-													</span>
-												)}
-												<div class:list={['min-w-0', lead && 'pt-1.5 md:pt-2']}>
-													<p class:list={['font-ui text-ink leading-snug font-semibold', lead ? 'text-lg md:text-xl' : 'text-[15px] md:text-base']}>
-														{member.name}
-													</p>
-													<p class:list={['font-ui mt-1 leading-snug', lead ? 'text-leaf text-sm' : 'text-[13px] text-stone-500']}>
+									{group.members.map((member, i) =>
+										isLead(member) ? (
+											// Lead: same type scale and grid as the members below, plus a round headshot (a cut-out on their
+											// own bright colour, or initials on it) and their one-line bio under the title
+											<li class="flex items-start gap-3.5" data-reveal style={`--delay: ${80 + i * 60}ms`}>
+												<span
+													class:list={[
+														'relative size-12 shrink-0 overflow-hidden rounded-full md:size-[3.25rem]',
+														member.color ? 'ring-1 ring-black/5' : 'bg-stone-100 ring-1 ring-stone-200',
+													]}
+													style={member.color ? `background-color: ${member.color}` : undefined}
+												>
+													{member.photo ? (
+														<Image src={member.photo} alt="" widths={[52, 104, 156]} sizes="52px" class="h-full w-full object-cover" />
+													) : (
+														<span
+															class:list={[
+																'font-ui flex h-full w-full items-center justify-center text-[13px] font-semibold tracking-wide',
+																member.color ? 'text-white' : 'text-stone-400',
+															]}
+															aria-hidden="true"
+														>
+															{initials(member.name)}
+														</span>
+													)}
+												</span>
+												<div class="min-w-0 pt-0.5">
+													<p class="font-ui text-ink text-[15px] leading-snug font-semibold md:text-base">{member.name}</p>
+													<p class="font-ui text-leaf mt-0.5 text-[13px] leading-snug font-medium">
 														{member.role}
 														{member.grade && <span class="text-stone-400"> · {member.grade}</span>}
 													</p>
 													{member.bio && (
-														<p class:list={['font-ui mt-2.5 leading-snug text-stone-500', lead ? 'max-w-[20rem] text-sm' : 'max-w-[17rem] text-[13px]']}>
-															{member.bio}
-														</p>
+														<p class="font-ui mt-2 max-w-[17rem] text-[13px] leading-[1.5] text-pretty text-stone-500">{member.bio}</p>
 													)}
 												</div>
 											</li>
-										);
-									})}
+										) : (
+											<li data-reveal style={`--delay: ${80 + i * 60}ms`}>
+												<p class="font-ui text-ink text-[15px] leading-snug font-semibold md:text-base">{member.name}</p>
+												<p class="font-ui mt-1 text-[13px] leading-snug text-stone-500">
+													{member.role}
+													{member.grade && <span class="text-stone-400"> · {member.grade}</span>}
+												</p>
+												{member.bio && <p class="font-ui mt-2 max-w-[17rem] text-[13px] leading-[1.5] text-pretty text-stone-500">{member.bio}</p>}
+											</li>
+										),
+									)}
 								</ul>
 							</div>
 						))
