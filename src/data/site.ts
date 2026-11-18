@@ -1,15 +1,18 @@
 // Site-wide settings. Anything left empty is simply not shown on the page — no placeholder text goes live.
 // TODO (Udaan team): fill these in before launch.
 import type { ImageMetadata } from 'astro';
+import ishanPhoto from '../assets/team/ishan.png';
+import rohanPhoto from '../assets/team/rohan.png';
 
 export type TeamMember = {
-	name: string;
-	role: string;
-	grade?: string; // any text, e.g. 'Class of 2027' (never goes stale) or '11th grade'
-	bio?: string; // one or two sentences in their own words
-	photo?: ImageMetadata; // optional: import from src/assets/team/
-	focus?: string; // where the face is, for cropping: CSS position like '50% 30%' (default: centre, slightly high)
-	adult?: boolean; // adult leadership — listed after the students, under its own label
+	name: string; // first name + last initial, e.g. 'Ishan K.'
+	role: string; // a title ('Marketing Lead') or focus areas ('Marketing & Finance')
+	group: string; // the row they appear in on /team, e.g. 'Team leads'; rows show in the order they first appear here
+	bio?: string; // optional one-liner (about 15 words), shown under the role
+	photo?: ImageMetadata; // optional small round headshot (leads only): a square cut-out PNG in src/assets/team/ (made with tools/portraits)
+	color?: string; // leads: the bright colour behind their headshot (or behind their initials if there is no photo)
+	grade?: string; // optional, e.g. 'Class of 2027'
+	adult?: boolean; // adults aren't counted in the "students behind Udaan" number
 };
 
 /** Official name, as search engines and link previews should show it. */
@@ -51,17 +54,25 @@ export const SOCIALS: { label: string; href: string }[] = [
 ];
 
 /**
- * Team members for the /team page, in display order.
- * Names + roles only -> a masthead layout. Once anyone has a photo -> the portrait grid. No other changes needed.
+ * Everyone on the /team page, grouped into rows by `group` (rows appear in the order they first show up below).
+ * Focus areas come from the workstream sign-up sheet. Keep it to first names and last initials.
+ * For a team photo at the top of the page, save it as src/assets/team/group.jpg (or .png/.webp).
  */
 export const TEAM: TeamMember[] = [
-	{ name: 'Ishan K.', role: 'Finance & Tech Lead' },
-	{ name: 'Ennishka T.', role: 'Fundraising Lead' },
-	{ name: 'Samia Z.', role: 'Marketing Lead' },
-	{ name: 'Bhawna D.', role: 'Advisor', adult: true },
-	// { name: 'First L.', role: 'Founder' },
-	// { name: 'First L.', role: 'Founder', grade: 'Class of 2027', bio: 'Why I am part of Udaan…', photo: firstPhoto, focus: '50% 30%' },
-	// (import photos at the top: import firstPhoto from '../assets/team/first.jpg';)
+	{ name: 'Ennishka T.', role: 'Partnerships Lead', group: 'Team leads', color: '#ff4d9d' },
+	{ name: 'Ishan K.', role: 'Finance & Tech Lead', group: 'Team leads', color: '#1fc463', photo: ishanPhoto },
+	{ name: 'Rohan S.', role: 'Fundraising Lead', group: 'Team leads', color: '#3b6cff', photo: rohanPhoto, bio: 'Life Scout working toward Eagle Scout; plays piano and French horn.' },
+	{ name: 'Samia Z.', role: 'Marketing Lead', group: 'Team leads', color: '#ff7a1a' },
+
+	{ name: 'Ahran T.', role: 'Marketing & Finance', group: 'Team members' },
+	{ name: 'Ishanvi D.', role: 'Fundraising & Partnerships', group: 'Team members' },
+	{ name: 'Lasya V.', role: 'Marketing & Fundraising', group: 'Team members' },
+	{ name: 'Nikhil S.', role: 'Marketing & Partnerships', group: 'Team members' },
+	{ name: 'Sania R.', role: 'Marketing & Finance', group: 'Team members' },
+	{ name: 'Smaran M.', role: 'Tech', group: 'Team members' },
+	{ name: 'Vivaan R.', role: 'Marketing & Tech', group: 'Team members' },
+
+	{ name: 'Bhawna D.', role: 'Advisor', group: 'Adult leadership', adult: true },
 ];
 
 /** Suggested donation amounts (in USD) for the donate form. */

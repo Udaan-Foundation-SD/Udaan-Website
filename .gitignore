@@ -22,3 +22,6 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# local photo tools (Python env, raw photos) stay out of the repo
+tools/

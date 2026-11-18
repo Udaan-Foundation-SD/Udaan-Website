@@ -28,7 +28,7 @@ Most day-to-day updates don't need any code — just these files:
 
 Anything left empty in `src/data/site.ts` is simply hidden on the site, so no placeholder text goes live.
 
-- **Team page:** names and roles only shows a masthead list; once anyone has a photo it switches to a portrait grid.
+- **Team page:** everyone in `TEAM` is listed in rows by their `group` (e.g. "Team leads", "Team members", "Adult leadership"), with name, role, and an optional one-line `bio`. The headline's small number counts the students automatically. To add a team photo under the intro, save it as `src/assets/team/group.jpg` (or `.png`/`.webp`); it appears automatically.
 - **Donate page:** shows a "Donations opening soon" preview until `DONATE_CHECKOUT_URL` is set.
 - **Apply page:** shows "Our application form is opening soon" until `APPLY_FORM_URL` is set.
 - **Analytics:** set `GOATCOUNTER_CODE` to your GoatCounter site code (the `yourcode` in `yourcode.goatcounter.com`) to count visits. It has no cookies and collects no personal data. It only runs on the live site, not on `npm run dev`. The privacy page automatically switches to wording that describes it.

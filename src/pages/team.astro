@@ -1,24 +1,31 @@
 ---
+import type { ImageMetadata } from 'astro';
 import { Image } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
 import Button from '../components/Button.astro';
-import { TEAM } from '../data/site';
+import { TEAM, type TeamMember } from '../data/site';
 
-// Team members come from TEAM in src/data/site.ts. The layout picks itself:
-//   - nobody has a photo yet  -> a magazine-style masthead (big names, roles on the right, lines that draw in)
-//   - any photos added        -> the portrait grid (portraits develop from black-and-white into colour)
-// While TEAM is empty: dev shows labelled placeholder rows; the built site shows a short note instead.
-const hasPhotos = TEAM.some((member) => member.photo);
-const showPlaceholders = import.meta.env.DEV && TEAM.length === 0;
-const pad = (n: number) => String(n).padStart(2, '0');
+// The team page, built from TEAM in src/data/site.ts:
+//   - the headline carries a superscript count of students (like the numbers in the navbar)
+//   - an optional team photo: save it as src/assets/team/group.jpg (or .png/.webp) and it appears under the intro
+//   - one row per group: a small label on the left, people in a grid on the right (name, role, optional one-liner)
+const groupPhoto = Object.values(
+	import.meta.glob<{ default: ImageMetadata }>('../assets/team/group.{jpg,jpeg,png,webp}', { eager: true }),
+)[0]?.default;
 
-// Students first, then adult leadership under its own label (the heading says "The students behind Udaan")
-const ordered = [...TEAM.filter((m) => !m.adult), ...TEAM.filter((m) => m.adult)];
-const startsAdults = (list: { adult?: boolean }[], i: number) => Boolean(list[i]?.adult && !list[i - 1]?.adult);
-const ADULT_LABEL = 'Adult leadership';
+const studentCount = TEAM.filter((m) => !m.adult).length;
 
+// Rows in the order each group first appears in TEAM
+const groups = TEAM.reduce<{ label: string; members: TeamMember[] }[]>((rows, member) => {
+	const row = rows.find((r) => r.label === member.group);
+	if (row) row.members.push(member);
+	else rows.push({ label: member.group, members: [member] });
+	return rows;
+}, []);
+const isLead = (member: TeamMember) => /\blead\b/i.test(member.role);
 const initials = (name: string) =>
 	name
+		.replace(/\./g, '')
 		.split(/\s+/)
 		.map((part) => part[0])
 		.join('')
@@ -31,133 +38,132 @@ const initials = (name: string) =>
 	description="Meet the San Diego high school students and adult advisor behind Udaan Foundation SD, funding vetted grassroots organizations that support children in India."
 >
 	<main>
+		<!-- Intro -->
 		<section class="px-6 pt-12 lg:px-12 lg:pt-20">
 			<div class="max-w-6xl">
 				<p class="font-ui text-[11px] font-semibold tracking-[0.16em] text-stone-500 uppercase" data-reveal>Our team</p>
+				<!-- One line on desktop; the count is tucked against "Udaan" (never wraps away from it) at cap height -->
 				<h1
-					class="text-ink mt-3 max-w-3xl font-serif text-5xl leading-[1.02] font-medium tracking-[-0.02em] text-balance md:text-6xl lg:text-7xl"
+					class="text-ink mt-3 font-serif text-5xl leading-[1.02] font-medium tracking-[-0.02em] text-balance md:text-6xl lg:text-[4.25rem]"
 					data-reveal
 					style="--delay: 80ms"
 				>
-					The students behind Udaan.
+					The students behind <span class="whitespace-nowrap"
+						>Udaan{
+							studentCount > 0 && (
+								<sup
+									class="font-ui text-leaf relative top-[0.5em] ml-[0.12em] align-top text-[0.28em] leading-none font-semibold tracking-normal tabular-nums"
+									aria-label={`, ${studentCount} students`}
+								>
+									{studentCount}
+								</sup>
+							)
+						}</span
+					>
 				</h1>
 				<p class="mt-6 max-w-xl font-serif text-lg leading-snug text-stone-500 md:text-xl" data-reveal style="--delay: 160ms">
-					We're high school students at Canyon Crest Academy in San Diego who believe the people already doing the work deserve the funding to keep doing it.
-					Here's who we are.
+					We're high school students in San Diego, most of us at Canyon Crest Academy, who believe the people already doing the work deserve the funding to keep doing it.
 				</p>
 			</div>
 		</section>
 
-		<section class="px-6 pt-16 pb-24 lg:px-12 lg:pt-24 lg:pb-36">
-			<!-- Portrait grid (photos): portraits develop from black-and-white into colour (fx-develop).
-			     Masthead (names only): one row per lead; each line draws across, then the name and role arrive. -->
+		<!-- Optional team photo -->
+		{
+			groupPhoto && (
+				<section class="px-6 pt-16 lg:px-12 lg:pt-20">
+					<figure class="fx-develop max-w-6xl" data-reveal>
+						<div class="aspect-[16/9] overflow-hidden rounded-xl bg-stone-100">
+							<Image
+								src={groupPhoto}
+								alt="The Udaan Foundation SD team"
+								widths={[640, 1024, 1600]}
+								sizes="(min-width: 1280px) 1152px, 100vw"
+								class="h-full w-full object-cover"
+							/>
+						</div>
+					</figure>
+				</section>
+			)
+		}
+
+		<!-- The roster: one row per group, each row's top line draws in, then its people fade in one after another -->
+		<section class="px-6 pt-16 lg:px-12 lg:pt-24">
 			<div class="max-w-6xl">
 				{
-					TEAM.length > 0 && hasPhotos ? (
-						<ul class="grid grid-cols-2 gap-x-5 gap-y-14 md:grid-cols-3 lg:grid-cols-4 lg:gap-x-8">
-							{ordered.map((member, i) => (
-								<>
-								{startsAdults(ordered, i) && (
-									<li class="font-ui col-span-full -mb-6 pt-6 text-[11px] font-semibold tracking-[0.16em] text-stone-500 uppercase" data-reveal>
-										{ADULT_LABEL}
-									</li>
-								)}
-								<li class="fx-develop" data-reveal style={`--delay: ${(i % 4) * 110}ms`}>
-									<div class="aspect-[4/5] overflow-hidden rounded-md bg-stone-100">
-										{member.photo ? (
-											<Image
-												src={member.photo}
-												alt={`Portrait of ${member.name}`}
-												widths={[320, 640]}
-												sizes="(min-width: 1024px) 25vw, (min-width: 768px) 33vw, 50vw"
-												class="h-full w-full object-cover"
-												style={`object-position: ${member.focus ?? '50% 30%'}`}
-											/>
-										) : (
-											<div class="flex h-full w-full items-center justify-center font-serif text-5xl text-stone-400">
-												{initials(member.name)}
-											</div>
-										)}
-									</div>
-									<p class="text-ink mt-4 font-serif text-2xl leading-tight">{member.name}</p>
-									<p class="font-ui mt-1 text-[11px] font-semibold tracking-[0.14em] uppercase">
-										<span class="text-leaf">{member.role}</span>
-										{member.grade && <span class="text-stone-400"> · {member.grade}</span>}
-									</p>
-									{member.bio && <p class="mt-3 font-serif text-[17px] leading-snug text-stone-600">{member.bio}</p>}
-								</li>
-								</>
-							))}
-						</ul>
-					) : TEAM.length > 0 || showPlaceholders ? (
-						<>
-							<ol class="relative" aria-hidden={showPlaceholders ? 'true' : undefined}>
-								{(TEAM.length > 0 ? ordered : [1, 2, 3, 4].map((n) => ({ name: `Team member ${n}`, role: 'Role', grade: undefined, adult: false }))).map((member, i, list) => (
-									<>
-									{startsAdults(list, i) && (
-										<li class="font-ui pt-14 pb-4 text-[11px] font-semibold tracking-[0.16em] text-stone-500 uppercase md:pt-16" data-reveal>
-											{ADULT_LABEL}
-										</li>
-									)}
-									<li class="relative grid grid-cols-[2.25rem_1fr] items-baseline gap-x-4 gap-y-2 py-7 md:grid-cols-[3rem_1fr_auto] md:gap-x-6 md:py-9">
-										<span
-											class="absolute inset-x-0 top-0 h-px bg-stone-200"
-											aria-hidden="true"
-											data-reveal="draw"
-											style={`--delay: ${i * 130}ms`}
-										/>
-										<span
-											class="font-ui text-[12px] font-semibold text-stone-400 tabular-nums"
-											data-reveal
-											style={`--delay: ${i * 130 + 120}ms`}
-										>
-											{pad(i + 1)}
-										</span>
-										<p
-											class:list={[
-												'font-serif text-4xl leading-[1.05] font-medium tracking-[-0.015em] md:text-6xl',
-												showPlaceholders ? 'text-stone-300' : 'text-ink',
-											]}
-											data-reveal
-											style={`--delay: ${i * 130 + 180}ms`}
-										>
-											{member.name}
-										</p>
-										<p
-											class="font-ui col-start-2 text-[11px] font-semibold tracking-[0.14em] uppercase md:col-start-auto md:text-right"
-											data-reveal
-											style={`--delay: ${i * 130 + 260}ms`}
-										>
-											<span class={showPlaceholders ? 'text-stone-300' : 'text-leaf'}>{member.role}</span>
-											{member.grade && <span class="text-stone-400"> · {member.grade}</span>}
-										</p>
-									</li>
-									</>
-								))}
-								<li class="relative h-px" aria-hidden="true">
-									<span
-										class="absolute inset-x-0 top-0 h-px bg-stone-200"
-										data-reveal="draw"
-										style={`--delay: ${(TEAM.length || 4) * 130}ms`}
-									/>
-								</li>
-							</ol>
-							{showPlaceholders && (
-								<p class="font-ui mt-10 text-[12px] text-stone-400">
-									Dev preview only: add people to <code>TEAM</code> in <code>src/data/site.ts</code>. The live site won't show these rows.
-								</p>
-							)}
-						</>
+					groups.length > 0 ? (
+						groups.map((group) => (
+							<div class="relative grid gap-y-7 py-10 md:py-12 lg:grid-cols-12 lg:gap-x-10">
+								<span class="absolute inset-x-0 top-0 h-px bg-stone-200" aria-hidden="true" data-reveal="draw" />
+								<h2 class="font-ui pt-0.5 text-[11px] font-semibold tracking-[0.16em] text-stone-500 uppercase lg:col-span-3" data-reveal>
+									{group.label}
+								</h2>
+								<ul
+									class:list={[
+										'grid gap-x-6 md:gap-x-8 lg:col-span-9',
+										// Leads get bigger profiles, two to a row (one on phones); everyone else sits three across (two on phones)
+										group.members.some(isLead) ? 'grid-cols-1 gap-y-9 sm:grid-cols-2 md:gap-y-12' : 'grid-cols-2 gap-y-9 md:grid-cols-3',
+									]}
+								>
+									{group.members.map((member, i) => {
+										const lead = isLead(member);
+										return (
+											<li class:list={['flex items-start', lead ? 'gap-4 md:gap-5' : 'gap-3.5']} data-reveal style={`--delay: ${80 + i * 60}ms`}>
+												{/* Leads get a round headshot (a cut-out on their own bright colour); without a photo,
+												    their initials sit on that colour instead, so names still line up */}
+												{lead && (
+													<span
+														class:list={[
+															'relative size-16 shrink-0 overflow-hidden rounded-full md:size-[4.5rem]',
+															member.color ? 'ring-1 ring-black/5' : 'bg-stone-100 ring-1 ring-stone-200',
+														]}
+														style={member.color ? `background-color: ${member.color}` : undefined}
+													>
+														{member.photo ? (
+															<Image src={member.photo} alt="" widths={[72, 144, 216]} sizes="72px" class="h-full w-full object-cover" />
+														) : (
+															<span
+																class:list={[
+																	'font-ui flex h-full w-full items-center justify-center text-[15px] font-semibold tracking-wide',
+																	member.color ? 'text-white' : 'text-stone-400',
+																]}
+																aria-hidden="true"
+															>
+																{initials(member.name)}
+															</span>
+														)}
+													</span>
+												)}
+												<div class:list={['min-w-0', lead && 'pt-1.5 md:pt-2']}>
+													<p class:list={['font-ui text-ink leading-snug font-semibold', lead ? 'text-lg md:text-xl' : 'text-[15px] md:text-base']}>
+														{member.name}
+													</p>
+													<p class:list={['font-ui mt-1 leading-snug', lead ? 'text-leaf text-sm' : 'text-[13px] text-stone-500']}>
+														{member.role}
+														{member.grade && <span class="text-stone-400"> · {member.grade}</span>}
+													</p>
+													{member.bio && (
+														<p class:list={['font-ui mt-2.5 leading-snug text-stone-500', lead ? 'max-w-[20rem] text-sm' : 'max-w-[17rem] text-[13px]']}>
+															{member.bio}
+														</p>
+													)}
+												</div>
+											</li>
+										);
+									})}
+								</ul>
+							</div>
+						))
 					) : (
 						<p class="font-serif text-xl text-stone-500">Team profiles are on their way.</p>
 					)
 				}
+				<span class="block h-px bg-stone-200" aria-hidden="true" data-reveal="draw"></span>
 			</div>
 		</section>
 
-		<section class="px-6 pb-24 lg:px-12 lg:pb-36">
-			<div class="relative grid max-w-6xl items-end gap-8 pt-14 md:grid-cols-2">
-				<span class="absolute inset-x-0 top-0 h-px bg-stone-200" aria-hidden="true" data-reveal="draw"></span>
+		<!-- Closing call to action -->
+		<section class="px-6 py-24 lg:px-12 lg:py-36">
+			<div class="grid max-w-6xl items-end gap-8 md:grid-cols-2">
 				<h2
 					class="text-ink font-serif text-3xl leading-[1.1] font-medium tracking-[-0.01em] text-balance md:text-4xl"
 					data-reveal
