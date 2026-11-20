@@ -140,8 +140,11 @@ const config = { site, instagram, donate: DONATE_CHECKOUT_URL ? `${site}/donate/
 	// Email-safe markup: tables, inline styles, system fonts, absolute image URLs.
 	// Layout: the real wordmark (an image, so it keeps our Garamond lettering) | hairline | name, role, links.
 	function signature(name, role, imgBase) {
-		const font = "font-family:'Helvetica Neue',Helvetica,Arial,sans-serif;";
-		const linkStyle = `color:#2d7a3e;text-decoration:none;font-weight:600;${font}`;
+		// Gmail can't load web fonts, so use each reader's own modern UI font:
+		// SF Pro on Apple devices, Segoe UI on Windows, Roboto on Android, Helvetica/Arial as the last resort.
+		const font =
+			"font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',Roboto,'Helvetica Neue',Helvetica,Arial,sans-serif;";
+		const linkStyle = `color:#44403c;text-decoration:none;font-weight:500;${font}`;
 		// Each link is icon + label, kept together so the row wraps between links, never inside one
 		const item = (href, iconFile, label) =>
 			`<span style="white-space:nowrap;display:inline-block;margin-right:14px;">` +
@@ -159,11 +162,13 @@ const config = { site, instagram, donate: DONATE_CHECKOUT_URL ? `${site}/donate/
 			`<div style="font-size:9.5px;line-height:13px;letter-spacing:1.4px;text-transform:uppercase;color:#78716c;padding:6px 0 0 3px;white-space:nowrap;${font}">San Diego, CA</div>` +
 			`</td>` +
 			// Details column, set off by a green hairline
-			`<td style="vertical-align:middle;border-left:2px solid #2d7a3e;padding:1px 0 1px 18px;${font}">` +
-			`<div style="font-size:16px;line-height:21px;font-weight:700;letter-spacing:-0.2px;color:#1a1814;${font}">${esc(name)}</div>` +
-			(role ? `<div style="font-size:13px;line-height:18px;font-weight:600;color:#2d7a3e;${font}">${esc(role)}</div>` : '') +
-			`<div style="font-size:12px;line-height:18px;color:#57534e;${font}">Udaan Foundation SD</div>` +
-			`<div style="font-size:12px;line-height:18px;padding-top:7px;${font}">${links.join('')}</div>` +
+			`<td style="vertical-align:middle;border-left:1px solid #d6d3d1;padding:2px 0 2px 18px;${font}">` +
+			// Name: semibold, slightly tightened. Role: small tracked capitals in green, like the labels on the site.
+			`<div style="font-size:15px;line-height:20px;font-weight:600;letter-spacing:-0.2px;color:#1a1814;${font}">${esc(name)}</div>` +
+			(role
+				? `<div style="font-size:10.5px;line-height:15px;font-weight:600;letter-spacing:1.1px;text-transform:uppercase;color:#2d7a3e;padding-top:3px;${font}">${esc(role)}</div>`
+				: '') +
+			`<div style="font-size:12px;line-height:18px;padding-top:9px;${font}">${links.join('')}</div>` +
 			`</td>` +
 			`</tr>` +
 			`</table>`
