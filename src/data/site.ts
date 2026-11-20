@@ -36,7 +36,7 @@ export const DONATE_CHECKOUT_URL = '';
 export const APPLY_FORM_URL = 'https://tally.so/r/9NZqV4';
 
 /** Legal / registration line for the footer, e.g. 'Udaan Foundation is a registered 501(c)(3) nonprofit. EIN 00-0000000.' */
-export const LEGAL_NOTE = '';
+export const LEGAL_NOTE = 'Udaan Foundation SD is a program of Excelar, a 501(c)(3) nonprofit organization (EIN 85-1861107).';
 
 /** Answer to "Is my donation tax-deductible?" on /donate. The question only appears once this is set. */
 export const TAX_NOTE = '';

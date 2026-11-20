@@ -28,6 +28,8 @@ const schema = {
 			areaServed: { '@type': 'Country', name: 'India' },
 			// Where we are (the "SD" in the name). City-level only: no street address is published.
 			address: { '@type': 'PostalAddress', addressLocality: 'San Diego', addressRegion: 'CA', addressCountry: 'US' },
+			// Udaan is a program of Excelar, its 501(c)(3) umbrella organization
+			parentOrganization: { '@type': 'NGO', name: 'Excelar', taxID: '85-1861107', nonprofitStatus: 'Nonprofit501c3' },
 			...(CONTACT_EMAIL && {
 				email: CONTACT_EMAIL,
 				contactPoint: { '@type': 'ContactPoint', contactType: 'general inquiries', email: CONTACT_EMAIL },

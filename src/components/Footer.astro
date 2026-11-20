@@ -80,7 +80,8 @@ const year = new Date().getFullYear();
 
 		<div class="font-ui mt-14 flex flex-col gap-2 border-t border-stone-200 pt-6 text-[12px] text-stone-500 md:flex-row md:justify-between">
 			<p>
-				© {year} {ORG_NAME}{LEGAL_NOTE && <span class="block md:inline md:before:content-['_·_']">{LEGAL_NOTE}</span>}
+				© {year} {ORG_NAME}{/* Ligatures off: Manrope otherwise turns the "(c)" in "501(c)(3)" into a © sign */}
+				{LEGAL_NOTE && <span class="block [font-feature-settings:'calt'_0,'liga'_0] [font-variant-ligatures:none] md:inline md:before:content-['_·_']">{LEGAL_NOTE}</span>}
 			</p>
 			<p>
 				Photos courtesy of our partners · <a href="/privacy/" class="hover:text-ink underline-offset-4 hover:underline">Privacy</a>
