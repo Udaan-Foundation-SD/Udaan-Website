@@ -5,10 +5,12 @@
 // the logo is served from /email/ on the live site so it loads in anyone's inbox.
 import Layout from '../layouts/Layout.astro';
 import { TEAM, SOCIALS, DONATE_CHECKOUT_URL } from '../data/site';
+// Italic Garamond for the profile-picture initials (matches the wordmark); only this page loads it
+import '@fontsource-variable/eb-garamond/wght-italic.css';
 
 const site = (Astro.site ?? new URL('https://www.udaanfoundationsd.org')).href.replace(/\/$/, '');
 const instagram = SOCIALS.find((s) => s.label === 'Instagram')?.href ?? '';
-const people = TEAM.map((m) => ({ name: m.name, role: m.role }));
+const people = TEAM.map((m) => ({ name: m.name, role: m.role, color: m.color ?? '' }));
 const config = { site, instagram, donate: DONATE_CHECKOUT_URL ? `${site}/donate/` : '' };
 ---
 
@@ -40,6 +42,7 @@ const config = { site, instagram, donate: DONATE_CHECKOUT_URL ? `${site}/donate/
 									class="font-ui rounded-full border border-stone-200 px-3 py-1 text-[13px] text-stone-600 transition-colors hover:border-stone-300 hover:text-ink aria-pressed:border-leaf aria-pressed:bg-leaf aria-pressed:text-white"
 									data-name={p.name}
 									data-role={p.role}
+									data-color={p.color}
 									aria-pressed="false"
 								>
 									{p.name}
@@ -80,7 +83,7 @@ const config = { site, instagram, donate: DONATE_CHECKOUT_URL ? `${site}/donate/
 					<p class="font-ui text-[13px] font-semibold text-stone-500">Preview</p>
 					<div class="mt-3 overflow-x-auto rounded-xl border border-stone-200 bg-white p-5 shadow-[0_1px_2px_rgba(0,0,0,0.04)] md:p-8">
 						<p class="text-[14px] leading-6 text-stone-500" style="font-family: Arial, Helvetica, sans-serif">
-							Thanks so much,
+							Warmly,
 						</p>
 						<div class="mt-4" id="sig-preview"></div>
 					</div>
@@ -122,9 +125,218 @@ const config = { site, instagram, donate: DONATE_CHECKOUT_URL ? `${site}/donate/
 					</li>
 				</ol>
 			</div>
+
+			<!-- Profile picture: initials in the wordmark's italic Garamond, with its flight path and bird -->
+			<div class="mt-20 border-t border-stone-200 pt-10">
+				<h2 class="text-ink font-serif text-2xl font-medium md:text-3xl">Profile picture</h2>
+				<p class="font-ui mt-3 max-w-xl text-[15px] leading-relaxed text-stone-600">
+					No headshot? Use this instead. It shows next to your name in Gmail, Meet, and Chat. It uses the name you picked
+					above.
+				</p>
+
+				<div class="mt-8 flex flex-col gap-10 md:flex-row md:items-start md:gap-14">
+					<div class="flex items-end gap-6">
+						<canvas id="pfp" width="800" height="800" class="size-44 rounded-full ring-1 ring-black/5 md:size-52"
+						></canvas>
+						<!-- Roughly the size it appears in an inbox -->
+						<div class="pb-1 text-center">
+							<img id="pfp-small" alt="" class="size-10 rounded-full ring-1 ring-black/5" />
+							<p class="font-ui mt-2 text-[11px] text-stone-400">Inbox size</p>
+						</div>
+					</div>
+
+					<div class="min-w-0">
+						<p class="font-ui text-[13px] font-semibold text-stone-500">Background</p>
+						<div class="mt-3 flex flex-wrap gap-2.5" id="pfp-swatches"></div>
+
+						<button
+							type="button"
+							id="pfp-download"
+							class="font-ui bg-leaf hover:bg-leaf-deep mt-7 inline-flex items-center justify-center rounded-md px-6 py-2 text-[13.5px] leading-5 font-semibold text-white transition-colors"
+						>
+							Download picture
+						</button>
+
+						<ol class="font-ui mt-7 space-y-2 text-[14px] leading-relaxed text-stone-600">
+							<li>
+								<span class="text-leaf mr-1.5 text-[12px] font-semibold">01</span> Go to
+								<a href="https://myaccount.google.com/" class="text-ink font-medium underline decoration-stone-300 underline-offset-2 hover:decoration-leaf"
+									>myaccount.google.com</a
+								>, signed in to your Udaan account.
+							</li>
+							<li>
+								<span class="text-leaf mr-1.5 text-[12px] font-semibold">02</span> Click your current picture (or the
+								letter in the circle), then <span class="text-ink font-medium">Change</span>.
+							</li>
+							<li>
+								<span class="text-leaf mr-1.5 text-[12px] font-semibold">03</span> Upload the picture you downloaded and
+								click <span class="text-ink font-medium">Save</span>.
+							</li>
+						</ol>
+					</div>
+				</div>
+			</div>
 		</div>
 	</main>
 </Layout>
+
+<script is:inline>
+	(() => {
+		const canvas = document.getElementById('pfp');
+		const small = document.getElementById('pfp-small');
+		const swatchBox = document.getElementById('pfp-swatches');
+		const nameInput = document.getElementById('sig-name');
+		const ctx = canvas.getContext('2d');
+		const W = canvas.width;
+		const FONT = '"EB Garamond Variable", Garamond, Georgia, serif';
+
+		// Wordmark geometry (same paths as src/components/Wordmark.astro): the flight path and bird that leave the last letter
+		const SWOOSH = new Path2D('M270 85.6C297 95.5 318 77 327.5 46C321.8 80.5 298 101 270 91.4Z');
+		const BIRD = new Path2D(
+			'M60 18C58 15.5 55 13.5 52 14C49 14.5 47 17 44 21.5C39 13 31 5.5 21 2C25.5 9.5 28 18 29.5 27C24 30.5 18 33.5 12 35.5L2 33.5L8.5 40L3.5 47L14 41.5C28 41 41 35 50 26.5C54 23.5 57 20.5 60 18Z',
+		);
+		const BIRD_M = new DOMMatrix().translate(305, 8).scale(0.8).rotate(-24);
+		// In wordmark units: where the last letter ends on the baseline, and how tall a capital is
+		const ANCHOR = { x: 276, y: 101 };
+		const CAP_UNITS = 66.8;
+		// Accent bounds in wordmark units (swoosh + transformed bird)
+		const birdPts = [
+			[2, 2],
+			[60, 2],
+			[2, 47],
+			[60, 47],
+		].map(([x, y]) => BIRD_M.transformPoint({ x, y }));
+		const ACC = {
+			maxX: Math.max(327.5, ...birdPts.map((p) => p.x)),
+			minY: Math.min(46, ...birdPts.map((p) => p.y)),
+		};
+
+		const base = [
+			{ id: 'leaf', label: 'Udaan green', bg: '#2d7a3e', fg: '#ffffff', accent: '#b8e2c1' },
+			{ id: 'canopy', label: 'Forest', bg: '#1b2316', fg: '#f5f3ee', accent: '#7cc48b' },
+			{ id: 'paper', label: 'Paper', bg: '#f3f1ec', fg: '#1a1814', accent: '#2d7a3e' },
+		];
+		let teamColor = '';
+		let current = 'leaf';
+
+		const initials = (name) => {
+			const words = name
+				.replace(/[^\p{L}\s]/gu, ' ')
+				.trim()
+				.split(/\s+/)
+				.filter(Boolean);
+			if (!words.length) return 'U';
+			const first = words[0][0];
+			const last = words.length > 1 ? words[words.length - 1][0] : '';
+			return (first + last).toUpperCase();
+		};
+
+		const swatches = () => (teamColor ? [...base, { id: 'team', label: 'Your team colour', bg: teamColor, fg: '#ffffff', accent: 'rgba(255,255,255,0.88)' }] : base);
+
+		function renderSwatches() {
+			const list = swatches();
+			if (!list.some((s) => s.id === current)) current = 'leaf';
+			swatchBox.innerHTML = '';
+			for (const s of list) {
+				const b = document.createElement('button');
+				b.type = 'button';
+				b.title = s.label;
+				b.setAttribute('aria-label', s.label);
+				b.setAttribute('aria-pressed', String(s.id === current));
+				b.className =
+					'size-9 rounded-full ring-1 ring-black/10 ring-offset-2 transition-shadow aria-pressed:ring-2 aria-pressed:ring-stone-900';
+				b.style.background = s.bg;
+				b.addEventListener('click', () => {
+					current = s.id;
+					renderSwatches();
+					draw();
+				});
+				swatchBox.appendChild(b);
+			}
+		}
+
+		function draw() {
+			const style = swatches().find((s) => s.id === current);
+			const text = initials(nameInput.value);
+			let fs = text.length > 1 ? 360 : 400;
+
+			// Measure the whole mark (letters + flight path + bird), shrinking until it fits inside the circle crop
+			let m, s, left, right, top, bottom;
+			for (let i = 0; i < 12; i++) {
+				ctx.font = `italic 600 ${fs}px ${FONT}`;
+				m = ctx.measureText(text);
+				s = (m.actualBoundingBoxAscent * 0.98) / CAP_UNITS; // wordmark units → px, matched to cap height
+				left = -m.actualBoundingBoxLeft;
+				const inkRight = m.actualBoundingBoxRight;
+				right = Math.max(inkRight, inkRight + (ACC.maxX - ANCHOR.x) * s);
+				top = Math.min(-m.actualBoundingBoxAscent, (ACC.minY - ANCHOR.y) * s);
+				bottom = m.actualBoundingBoxDescent;
+				if (right - left <= W * 0.7 && bottom - top <= W * 0.56) break;
+				fs *= 0.92;
+			}
+
+			// Centre the mark's bounding box, nudged down a touch so the letters (not the bird) sit at optical centre
+			const x0 = (W - (right - left)) / 2 - left;
+			const y0 = (W - (bottom - top)) / 2 - top + W * 0.015;
+
+			ctx.setTransform(1, 0, 0, 1, 0, 0);
+			ctx.fillStyle = style.bg;
+			ctx.fillRect(0, 0, W, W);
+
+			ctx.fillStyle = style.fg;
+			ctx.font = `italic 600 ${fs}px ${FONT}`;
+			ctx.textBaseline = 'alphabetic';
+			ctx.fillText(text, x0, y0);
+
+			// Flight path + bird, anchored to the end of the last letter on the baseline
+			const endX = x0 + m.actualBoundingBoxRight;
+			ctx.setTransform(s, 0, 0, s, endX - ANCHOR.x * s, y0 - ANCHOR.y * s);
+			ctx.fillStyle = style.accent;
+			ctx.fill(SWOOSH);
+			const t = BIRD_M;
+			ctx.transform(t.a, t.b, t.c, t.d, t.e, t.f);
+			ctx.fill(BIRD);
+			ctx.setTransform(1, 0, 0, 1, 0, 0);
+
+			small.src = canvas.toDataURL('image/png');
+		}
+
+		function syncFromPicker() {
+			const name = nameInput.value.trim();
+			const match = Array.from(document.querySelectorAll('#people button')).find((p) => p.dataset.name === name);
+			const color = match?.dataset.color || '';
+			if (color !== teamColor) {
+				teamColor = color;
+				if (color) current = 'team';
+				renderSwatches();
+			}
+			draw();
+		}
+
+		document.getElementById('pfp-download').addEventListener('click', () => {
+			const text = initials(nameInput.value);
+			canvas.toBlob((blob) => {
+				if (!blob) return;
+				const a = document.createElement('a');
+				a.href = URL.createObjectURL(blob);
+				a.download = `udaan-profile-${text}.png`;
+				document.body.appendChild(a);
+				a.click();
+				a.remove();
+				setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+			}, 'image/png');
+		});
+
+		nameInput.addEventListener('input', syncFromPicker);
+		// This script runs before the signature script, so wait a tick for the pill click to fill in the name first
+		document.querySelectorAll('#people button').forEach((p) => p.addEventListener('click', () => setTimeout(syncFromPicker, 0)));
+
+		renderSwatches();
+		draw();
+		// Redraw once the italic Garamond has loaded (the first pass may use a fallback font)
+		document.fonts.load(`italic 600 100px ${FONT}`, 'AZ').then(draw).catch(() => {});
+	})();
+</script>
 
 <script is:inline define:vars={{ config }}>
 	const nameInput = document.getElementById('sig-name');
