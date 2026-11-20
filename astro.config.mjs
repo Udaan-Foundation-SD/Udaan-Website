@@ -14,7 +14,8 @@ export default defineConfig({
 
 	integrations: [
 		sitemap({
-			filter: (page) => !page.includes('/404'),
+			// Keep the 404 and the unlisted team signature tool out of the sitemap
+			filter: (page) => !page.includes('/404') && !page.includes('/signature-bvxdakmb'),
 		}),
 	],
 
